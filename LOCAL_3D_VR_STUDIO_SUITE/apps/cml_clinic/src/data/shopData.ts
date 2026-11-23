@@ -1,0 +1,121 @@
+export const initialShopProducts = [
+  {
+    id: "e-konsultacja-proktologiczna",
+    sku: "CML-EKON-01",
+    name: "E-Konsultacja Proktologiczna (Dr Jan Bujok)",
+    category: "services",
+    categoryLabel: "Usługi & E-Konsultacje",
+    price: 250,
+    originalPrice: 300,
+    stock: 45,
+    description: "Pierwszorazowa lub kontrolna konsultacja wideo/telefoniczna. Wywiad, analiza wyników badań i kwalifikacja do zabiegu LHP/FiLaC.",
+    medicalNote: "W cenie: zalecenia lekarskie, wystawienie e-recepty / e-zwolnienia L4 jeśli są wskazania medyczne.",
+    badge: "Polecane",
+    requiresConsultation: false
+  },
+  {
+    id: "pakiet-proktologia-kompleks",
+    sku: "CML-PAK-02",
+    name: "Pakiet Diagnostyczny: Wizyta + Anoskopia + Kwalifikacja",
+    category: "packages",
+    categoryLabel: "Pakiety Zabiegowe",
+    price: 420,
+    originalPrice: 500,
+    stock: 20,
+    description: "Kompleksowa stacjonarna diagnostyka w gabinecie CML Warszawa Wilanów: badanie per rectum, anoskopia wideo, plan leczenia.",
+    medicalNote: "Gwarancja natychmiastowego przerwania badania w przypadku dolegliwości bólowych.",
+    badge: "Bestseller",
+    requiresConsultation: false
+  },
+  {
+    id: "zestaw-gojenie-lhp",
+    sku: "CML-POST-03",
+    name: "Zestaw Regeneracyjny CML po zabiegu LHP / FiLaC",
+    category: "post_op",
+    categoryLabel: "Preparaty Po Zabiegach",
+    price: 189,
+    originalPrice: 220,
+    stock: 14,
+    description: "Medyczny żel łagodzący z kwasem hialuronowym, srebrem koloidalnym i nagietkiem oraz sterylny kompres regenerujący.",
+    medicalNote: "Skład zatwierdzony przez dr. Jana Bujoka do stosowania od 1. doby po laseroterapii.",
+    badge: "Medyczny Must-Have",
+    requiresConsultation: false
+  },
+  {
+    id: "dermokosmetyk-procto-cleanse",
+    sku: "CML-SKIN-04",
+    name: "Specjalistyczna Pianka do Higieny Intymnej CML ProctoCleanse 150ml",
+    category: "hygiene",
+    categoryLabel: "Higiena & Pielęgnacja",
+    price: 79,
+    stock: 60,
+    description: "Hipoalergiczna pianka do codziennej higieny brzeżnej z ekstraktem z kory dębu i pantenolem. pH neutralne dla skóry.",
+    medicalNote: "Bez parabenów, bez SLS, łagodzi świąd i pieczenie.",
+    requiresConsultation: false
+  },
+  {
+    id: "chusteczki-procto-wipes",
+    sku: "CML-HYG-07",
+    name: "Medyczne Chusteczki Nawilżane CML ProctoWipes (40 szt.)",
+    category: "hygiene",
+    categoryLabel: "Higiena & Pielęgnacja",
+    price: 39,
+    stock: 85,
+    description: "Biurowy i podróżny niezbędnik higieniczny z alantoiną, rumiankiem i kwasem mlekowym. 100% biodegradowalne.",
+    medicalNote: "Zastępuje tradycyjny papier toaletowy bez podrażniania anodermy.",
+    badge: "Nowość",
+    requiresConsultation: false
+  },
+  {
+    id: "blonnik-psyllium-pro",
+    sku: "CML-SUP-08",
+    name: "Błonnik Witalny CML Psyllium Pro 300g (Mielona Łuska Babki Jajowatej)",
+    category: "supplements",
+    categoryLabel: "Suplementy & Błonnik",
+    price: 69,
+    originalPrice: 85,
+    stock: 42,
+    description: "Frakcjonowana łuska babki jajowatej pęczniejąca w jelitach. Wiąże wodę, zmiękcza masę kałową i likwiduje bolesne zaparcia.",
+    medicalNote: "Zalecenie proktologiczne: stosować 1 miarkę rano z 250ml wody przed wypróżnieniem.",
+    badge: "Rekomendacja CML",
+    requiresConsultation: false
+  },
+  {
+    id: "czopki-oslonowe-proctohyal",
+    sku: "CML-SUP-09",
+    name: "Czopki Osłonowo-Nawilżające CML ProctoHyal (10 szt.)",
+    category: "supplements",
+    categoryLabel: "Suplementy & Błonnik",
+    price: 59,
+    stock: 35,
+    description: "Czopki z nisko- i wysokocząsteczkowym kwasem hialuronowym oraz masłem shea. Tworzą warstwę ochronną w kanale odbytu.",
+    medicalNote: "Regeneracja nabłonka po podrażnieniach i mikrourazach.",
+    requiresConsultation: false
+  },
+  {
+    id: "e-recepta-kontynuacja",
+    sku: "CML-EREP-05",
+    name: "Kontynuacja Terapii Leko-Zastępczej (E-Recepta)",
+    category: "services",
+    categoryLabel: "Usługi & E-Konsultacje",
+    price: 120,
+    stock: 100,
+    description: "Szybki wniosek o przedłużenie maści relaksujących zwieracz lub czopków przeciwzapalnych dla stałych pacjentów CML.",
+    medicalNote: "Wymaga uprzedniej przynajmniej 1 stacjonarnej wizyty w klinice CML.",
+    requiresConsultation: true
+  },
+  {
+    id: "pakiet-laser-lhp-pre",
+    sku: "CML-PAK-06",
+    name: "Kwalifikacja + Badania Krwi do Zabiegu LHP",
+    category: "packages",
+    categoryLabel: "Pakiety Zabiegowe",
+    price: 350,
+    stock: 8,
+    description: "Przedzabiegowy pakiet laboratoryjny (morfologia, APTT, INR, antygen HBs, przeciwciała anty-HCV) z omówieniem wyników.",
+    medicalNote: "Niezbędne do bezpiecznego przeprowadzenia leczenia laserowego.",
+    requiresConsultation: false
+  }
+];
+
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNob3BEYXRhLnRzIl0sInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IFNob3BQcm9kdWN0IH0gZnJvbSAnLi4vdHlwZXMnO1xuXG5leHBvcnQgY29uc3QgaW5pdGlhbFNob3BQcm9kdWN0czogU2hvcFByb2R1Y3RbXSA9IFtcbiAge1xuICAgIGlkOiAnZS1rb25zdWx0YWNqYS1wcm9rdG9sb2dpY3puYScsXG4gICAgc2t1OiAnQ01MLUVLT04tMDEnLFxuICAgIG5hbWU6ICdFLUtvbnN1bHRhY2phIFByb2t0b2xvZ2ljem5hIChEciBKYW4gQnVqb2spJyxcbiAgICBjYXRlZ29yeTogJ3NlcnZpY2VzJyxcbiAgICBjYXRlZ29yeUxhYmVsOiAnVXPFgnVnaSAmIEUtS29uc3VsdGFjamUnLFxuICAgIHByaWNlOiAyNTAsXG4gICAgb3JpZ2luYWxQcmljZTogMzAwLFxuICAgIHN0b2NrOiA0NSxcbiAgICBkZXNjcmlwdGlvbjogJ1BpZXJ3c3pvcmF6b3dhIGx1YiBrb250cm9sbmEga29uc3VsdGFjamEgd2lkZW8vdGVsZWZvbmljem5hLiBXeXdpYWQsIGFuYWxpemEgd3luaWvDs3cgYmFkYcWEIGkga3dhbGlmaWthY2phIGRvIHphYmllZ3UgTEhQL0ZpTGFDLicsXG4gICAgbWVkaWNhbE5vdGU6ICdXIGNlbmllOiB6YWxlY2VuaWEgbGVrYXJza2llLCB3eXN0YXdpZW5pZSBlLXJlY2VwdHkgLyBlLXp3b2xuaWVuaWEgTDQgamXFm2xpIHPEhSB3c2themFuaWEgbWVkeWN6bmUuJyxcbiAgICBiYWRnZTogJ1BvbGVjYW5lJyxcbiAgICByZXF1aXJlc0NvbnN1bHRhdGlvbjogZmFsc2UsXG4gIH0sXG4gIHtcbiAgICBpZDogJ3Bha2lldC1wcm9rdG9sb2dpYS1rb21wbGVrcycsXG4gICAgc2t1OiAnQ01MLVBBSy0wMicsXG4gICAgbmFtZTogJ1Bha2lldCBEaWFnbm9zdHljem55OiBXaXp5dGEgKyBBbm9za29waWEgKyBLd2FsaWZpa2FjamEnLFxuICAgIGNhdGVnb3J5OiAncGFja2FnZXMnLFxuICAgIGNhdGVnb3J5TGFiZWw6ICdQYWtpZXR5IFphYmllZ293ZScsXG4gICAgcHJpY2U6IDQyMCxcbiAgICBvcmlnaW5hbFByaWNlOiA1MDAsXG4gICAgc3RvY2s6IDIwLFxuICAgIGRlc2NyaXB0aW9uOiAnS29tcGxla3Nvd2Egc3RhY2pvbmFybmEgZGlhZ25vc3R5a2EgdyBnYWJpbmVjaWUgQ01MIFdhcnN6YXdhIFdpbGFuw7N3OiBiYWRhbmllIHBlciByZWN0dW0sIGFub3Nrb3BpYSB3aWRlbywgcGxhbiBsZWN6ZW5pYS4nLFxuICAgIG1lZGljYWxOb3RlOiAnR3dhcmFuY2phIG5hdHljaG1pYXN0b3dlZ28gcHJ6ZXJ3YW5pYSBiYWRhbmlhIHcgcHJ6eXBhZGt1IGRvbGVnbGl3b8WbY2kgYsOzbG93eWNoLicsXG4gICAgYmFkZ2U6ICdCZXN0c2VsbGVyJyxcbiAgICByZXF1aXJlc0NvbnN1bHRhdGlvbjogZmFsc2UsXG4gIH0sXG4gIHtcbiAgICBpZDogJ3plc3Rhdy1nb2plbmllLWxocCcsXG4gICAgc2t1OiAnQ01MLVBPU1QtMDMnLFxuICAgIG5hbWU6ICdaZXN0YXcgUmVnZW5lcmFjeWpueSBDTUwgcG8gemFiaWVndSBMSFAgLyBGaUxhQycsXG4gICAgY2F0ZWdvcnk6ICdwb3N0X29wJyxcbiAgICBjYXRlZ29yeUxhYmVsOiAnUHJlcGFyYXR5IFBvIFphYmllZ2FjaCcsXG4gICAgcHJpY2U6IDE4OSxcbiAgICBvcmlnaW5hbFByaWNlOiAyMjAsXG4gICAgc3RvY2s6IDE0LFxuICAgIGRlc2NyaXB0aW9uOiAnTWVkeWN6bnkgxbxlbCDFgmFnb2R6xIVjeSB6IGt3YXNlbSBoaWFsdXJvbm93eW0sIHNyZWJyZW0ga29sb2lkYWxueW0gaSBuYWdpZXRraWVtIG9yYXogc3Rlcnlsbnkga29tcHJlcyByZWdlbmVydWrEhWN5LicsXG4gICAgbWVkaWNhbE5vdGU6ICdTa8WCYWQgemF0d2llcmR6b255IHByemV6IGRyLiBKYW5hIEJ1am9rYSBkbyBzdG9zb3dhbmlhIG9kIDEuIGRvYnkgcG8gbGFzZXJvdGVyYXBpaS4nLFxuICAgIGJhZGdlOiAnTWVkeWN6bnkgTXVzdC1IYXZlJyxcbiAgICByZXF1aXJlc0NvbnN1bHRhdGlvbjogZmFsc2UsXG4gIH0sXG4gIHtcbiAgICBpZDogJ2Rlcm1va29zbWV0eWstcHJvY3RvLWNsZWFuc2UnLFxuICAgIHNrdTogJ0NNTC1TS0lOLTA0JyxcbiAgICBuYW1lOiAnU3BlY2phbGlzdHljem5hIFBpYW5rYSBkbyBIaWdpZW55IEludHltbmVqIENNTCBQcm9jdG9DbGVhbnNlIDE1MG1sJyxcbiAgICBjYXRlZ29yeTogJ2h5Z2llbmUnLFxuICAgIGNhdGVnb3J5TGFiZWw6ICdIaWdpZW5hICYgUGllbMSZZ25hY2phJyxcbiAgICBwcmljZTogNzksXG4gICAgc3RvY2s6IDYwLFxuICAgIGRlc2NyaXB0aW9uOiAnSGlwb2FsZXJnaWN6bmEgcGlhbmthIGRvIGNvZHppZW5uZWogaGlnaWVueSBicnplxbxuZWogeiBla3N0cmFrdGVtIHoga29yeSBkxJlidSBpIHBhbnRlbm9sZW0uIHBIIG5ldXRyYWxuZSBkbGEgc2vDs3J5LicsXG4gICAgbWVkaWNhbE5vdGU6ICdCZXogcGFyYWJlbsOzdywgYmV6IFNMUywgxYJhZ29kemkgxZt3acSFZCBpIHBpZWN6ZW5pZS4nLFxuICAgIHJlcXVpcmVzQ29uc3VsdGF0aW9uOiBmYWxzZSxcbiAgfSxcbiAge1xuICAgIGlkOiAnY2h1c3RlY3praS1wcm9jdG8td2lwZXMnLFxuICAgIHNrdTogJ0NNTC1IWUctMDcnLFxuICAgIG5hbWU6ICdNZWR5Y3puZSBDaHVzdGVjemtpIE5hd2lsxbxhbmUgQ01MIFByb2N0b1dpcGVzICg0MCBzenQuKScsXG4gICAgY2F0ZWdvcnk6ICdoeWdpZW5lJyxcbiAgICBjYXRlZ29yeUxhYmVsOiAnSGlnaWVuYSAmIFBpZWzEmWduYWNqYScsXG4gICAgcHJpY2U6IDM5LFxuICAgIHN0b2NrOiA4NSxcbiAgICBkZXNjcmlwdGlvbjogJ0JpdXJvd3kgaSBwb2Ryw7PFvG55IG5pZXpixJlkbmlrIGhpZ2llbmljem55IHogYWxhbnRvaW7EhSwgcnVtaWFua2llbSBpIGt3YXNlbSBtbGVrb3d5bS4gMTAwJSBiaW9kZWdyYWRvd2FsbmUuJyxcbiAgICBtZWRpY2FsTm90ZTogJ1phc3TEmXB1amUgdHJhZHljeWpueSBwYXBpZXIgdG9hbGV0b3d5IGJleiBwb2RyYcW8bmlhbmlhIGFub2Rlcm15LicsXG4gICAgYmFkZ2U6ICdOb3dvxZvEhycsXG4gICAgcmVxdWlyZXNDb25zdWx0YXRpb246IGZhbHNlLFxuICB9LFxuICB7XG4gICAgaWQ6ICdibG9ubmlrLXBzeWxsaXVtLXBybycsXG4gICAgc2t1OiAnQ01MLVNVUC0wOCcsXG4gICAgbmFtZTogJ0LFgm9ubmlrIFdpdGFsbnkgQ01MIFBzeWxsaXVtIFBybyAzMDBnIChNaWVsb25hIMWBdXNrYSBCYWJraSBKYWpvd2F0ZWopJyxcbiAgICBjYXRlZ29yeTogJ3N1cHBsZW1lbnRzJyxcbiAgICBjYXRlZ29yeUxhYmVsOiAnU3VwbGVtZW50eSAmIELFgm9ubmlrJyxcbiAgICBwcmljZTogNjksXG4gICAgb3JpZ2luYWxQcmljZTogODUsXG4gICAgc3RvY2s6IDQyLFxuICAgIGRlc2NyaXB0aW9uOiAnRnJha2Nqb25vd2FuYSDFgnVza2EgYmFia2kgamFqb3dhdGVqIHDEmWN6bmllasSFY2EgdyBqZWxpdGFjaC4gV2nEhcW8ZSB3b2TEmSwgem1pxJlrY3phIG1hc8SZIGthxYJvd8SFIGkgbGlrd2lkdWplIGJvbGVzbmUgemFwYXJjaWEuJyxcbiAgICBtZWRpY2FsTm90ZTogJ1phbGVjZW5pZSBwcm9rdG9sb2dpY3puZTogc3Rvc293YcSHIDEgbWlhcmvEmSByYW5vIHogMjUwbWwgd29keSBwcnplZCB3eXByw7PFvG5pZW5pZW0uJyxcbiAgICBiYWRnZTogJ1Jla29tZW5kYWNqYSBDTUwnLFxuICAgIHJlcXVpcmVzQ29uc3VsdGF0aW9uOiBmYWxzZSxcbiAgfSxcbiAge1xuICAgIGlkOiAnY3pvcGtpLW9zbG9ub3dlLXByb2N0b2h5YWwnLFxuICAgIHNrdTogJ0NNTC1TVVAtMDknLFxuICAgIG5hbWU6ICdDem9wa2kgT3PFgm9ub3dvLU5hd2lsxbxhasSFY2UgQ01MIFByb2N0b0h5YWwgKDEwIHN6dC4pJyxcbiAgICBjYXRlZ29yeTogJ3N1cHBsZW1lbnRzJyxcbiAgICBjYXRlZ29yeUxhYmVsOiAnU3VwbGVtZW50eSAmIELFgm9ubmlrJyxcbiAgICBwcmljZTogNTksXG4gICAgc3RvY2s6IDM1LFxuICAgIGRlc2NyaXB0aW9uOiAnQ3pvcGtpIHogbmlza28tIGkgd3lzb2tvY3rEhXN0ZWN6a293eW0ga3dhc2VtIGhpYWx1cm9ub3d5bSBvcmF6IG1hc8WCZW0gc2hlYS4gVHdvcnrEhSB3YXJzdHfEmSBvY2hyb25uxIUgdyBrYW5hbGUgb2RieXR1LicsXG4gICAgbWVkaWNhbE5vdGU6ICdSZWdlbmVyYWNqYSBuYWLFgm9ua2EgcG8gcG9kcmHFvG5pZW5pYWNoIGkgbWlrcm91cmF6YWNoLicsXG4gICAgcmVxdWlyZXNDb25zdWx0YXRpb246IGZhbHNlLFxuICB9LFxuICB7XG4gICAgaWQ6ICdlLXJlY2VwdGEta29udHludWFjamEnLFxuICAgIHNrdTogJ0NNTC1FUkVQLTA1JyxcbiAgICBuYW1lOiAnS29udHludWFjamEgVGVyYXBpaSBMZWtvLVphc3TEmXBjemVqIChFLVJlY2VwdGEpJyxcbiAgICBjYXRlZ29yeTogJ3NlcnZpY2VzJyxcbiAgICBjYXRlZ29yeUxhYmVsOiAnVXPFgnVnaSAmIEUtS29uc3VsdGFjamUnLFxuICAgIHByaWNlOiAxMjAsXG4gICAgc3RvY2s6IDEwMCxcbiAgICBkZXNjcmlwdGlvbjogJ1N6eWJraSB3bmlvc2VrIG8gcHJ6ZWTFgnXFvGVuaWUgbWHFm2NpIHJlbGFrc3VqxIVjeWNoIHp3aWVyYWN6IGx1YiBjem9wa8OzdyBwcnplY2l3emFwYWxueWNoIGRsYSBzdGHFgnljaCBwYWNqZW50w7N3IENNTC4nLFxuICAgIG1lZGljYWxOb3RlOiAnV3ltYWdhIHVwcnplZG5pZWogcHJ6eW5ham1uaWVqIDEgc3RhY2pvbmFybmVqIHdpenl0eSB3IGtsaW5pY2UgQ01MLicsXG4gICAgcmVxdWlyZXNDb25zdWx0YXRpb246IHRydWUsXG4gIH0sXG4gIHtcbiAgICBpZDogJ3Bha2lldC1sYXNlci1saHAtcHJlJyxcbiAgICBza3U6ICdDTUwtUEFLLTA2JyxcbiAgICBuYW1lOiAnS3dhbGlmaWthY2phICsgQmFkYW5pYSBLcndpIGRvIFphYmllZ3UgTEhQJyxcbiAgICBjYXRlZ29yeTogJ3BhY2thZ2VzJyxcbiAgICBjYXRlZ29yeUxhYmVsOiAnUGFraWV0eSBaYWJpZWdvd2UnLFxuICAgIHByaWNlOiAzNTAsXG4gICAgc3RvY2s6IDgsXG4gICAgZGVzY3JpcHRpb246ICdQcnplZHphYmllZ293eSBwYWtpZXQgbGFib3JhdG9yeWpueSAobW9yZm9sb2dpYSwgQVBUVCwgSU5SLCBhbnR5Z2VuIEhCcywgcHJ6ZWNpd2NpYcWCYSBhbnR5LUhDVikgeiBvbcOzd2llbmllbSB3eW5pa8Ozdy4nLFxuICAgIG1lZGljYWxOb3RlOiAnTmllemLEmWRuZSBkbyBiZXpwaWVjem5lZ28gcHJ6ZXByb3dhZHplbmlhIGxlY3plbmlhIGxhc2Vyb3dlZ28uJyxcbiAgICByZXF1aXJlc0NvbnN1bHRhdGlvbjogZmFsc2UsXG4gIH0sXG5dO1xuIl0sIm1hcHBpbmdzIjoiQUFFTyxhQUFNLHNCQUFxQztBQUFBLEVBQ2hEO0FBQUEsSUFDRSxJQUFJO0FBQUEsSUFDSixLQUFLO0FBQUEsSUFDTCxNQUFNO0FBQUEsSUFDTixVQUFVO0FBQUEsSUFDVixlQUFlO0FBQUEsSUFDZixPQUFPO0FBQUEsSUFDUCxlQUFlO0FBQUEsSUFDZixPQUFPO0FBQUEsSUFDUCxhQUFhO0FBQUEsSUFDYixhQUFhO0FBQUEsSUFDYixPQUFPO0FBQUEsSUFDUCxzQkFBc0I7QUFBQSxFQUN4QjtBQUFBLEVBQ0E7QUFBQSxJQUNFLElBQUk7QUFBQSxJQUNKLEtBQUs7QUFBQSxJQUNMLE1BQU07QUFBQSxJQUNOLFVBQVU7QUFBQSxJQUNWLGVBQWU7QUFBQSxJQUNmLE9BQU87QUFBQSxJQUNQLGVBQWU7QUFBQSxJQUNmLE9BQU87QUFBQSxJQUNQLGFBQWE7QUFBQSxJQUNiLGFBQWE7QUFBQSxJQUNiLE9BQU87QUFBQSxJQUNQLHNCQUFzQjtBQUFBLEVBQ3hCO0FBQUEsRUFDQTtBQUFBLElBQ0UsSUFBSTtBQUFBLElBQ0osS0FBSztBQUFBLElBQ0wsTUFBTTtBQUFBLElBQ04sVUFBVTtBQUFBLElBQ1YsZUFBZTtBQUFBLElBQ2YsT0FBTztBQUFBLElBQ1AsZUFBZTtBQUFBLElBQ2YsT0FBTztBQUFBLElBQ1AsYUFBYTtBQUFBLElBQ2IsYUFBYTtBQUFBLElBQ2IsT0FBTztBQUFBLElBQ1Asc0JBQXNCO0FBQUEsRUFDeEI7QUFBQSxFQUNBO0FBQUEsSUFDRSxJQUFJO0FBQUEsSUFDSixLQUFLO0FBQUEsSUFDTCxNQUFNO0FBQUEsSUFDTixVQUFVO0FBQUEsSUFDVixlQUFlO0FBQUEsSUFDZixPQUFPO0FBQUEsSUFDUCxPQUFPO0FBQUEsSUFDUCxhQUFhO0FBQUEsSUFDYixhQUFhO0FBQUEsSUFDYixzQkFBc0I7QUFBQSxFQUN4QjtBQUFBLEVBQ0E7QUFBQSxJQUNFLElBQUk7QUFBQSxJQUNKLEtBQUs7QUFBQSxJQUNMLE1BQU07QUFBQSxJQUNOLFVBQVU7QUFBQSxJQUNWLGVBQWU7QUFBQSxJQUNmLE9BQU87QUFBQSxJQUNQLE9BQU87QUFBQSxJQUNQLGFBQWE7QUFBQSxJQUNiLGFBQWE7QUFBQSxJQUNiLE9BQU87QUFBQSxJQUNQLHNCQUFzQjtBQUFBLEVBQ3hCO0FBQUEsRUFDQTtBQUFBLElBQ0UsSUFBSTtBQUFBLElBQ0osS0FBSztBQUFBLElBQ0wsTUFBTTtBQUFBLElBQ04sVUFBVTtBQUFBLElBQ1YsZUFBZTtBQUFBLElBQ2YsT0FBTztBQUFBLElBQ1AsZUFBZTtBQUFBLElBQ2YsT0FBTztBQUFBLElBQ1AsYUFBYTtBQUFBLElBQ2IsYUFBYTtBQUFBLElBQ2IsT0FBTztBQUFBLElBQ1Asc0JBQXNCO0FBQUEsRUFDeEI7QUFBQSxFQUNBO0FBQUEsSUFDRSxJQUFJO0FBQUEsSUFDSixLQUFLO0FBQUEsSUFDTCxNQUFNO0FBQUEsSUFDTixVQUFVO0FBQUEsSUFDVixlQUFlO0FBQUEsSUFDZixPQUFPO0FBQUEsSUFDUCxPQUFPO0FBQUEsSUFDUCxhQUFhO0FBQUEsSUFDYixhQUFhO0FBQUEsSUFDYixzQkFBc0I7QUFBQSxFQUN4QjtBQUFBLEVBQ0E7QUFBQSxJQUNFLElBQUk7QUFBQSxJQUNKLEtBQUs7QUFBQSxJQUNMLE1BQU07QUFBQSxJQUNOLFVBQVU7QUFBQSxJQUNWLGVBQWU7QUFBQSxJQUNmLE9BQU87QUFBQSxJQUNQLE9BQU87QUFBQSxJQUNQLGFBQWE7QUFBQSxJQUNiLGFBQWE7QUFBQSxJQUNiLHNCQUFzQjtBQUFBLEVBQ3hCO0FBQUEsRUFDQTtBQUFBLElBQ0UsSUFBSTtBQUFBLElBQ0osS0FBSztBQUFBLElBQ0wsTUFBTTtBQUFBLElBQ04sVUFBVTtBQUFBLElBQ1YsZUFBZTtBQUFBLElBQ2YsT0FBTztBQUFBLElBQ1AsT0FBTztBQUFBLElBQ1AsYUFBYTtBQUFBLElBQ2IsYUFBYTtBQUFBLElBQ2Isc0JBQXNCO0FBQUEsRUFDeEI7QUFDRjsiLCJuYW1lcyI6W119

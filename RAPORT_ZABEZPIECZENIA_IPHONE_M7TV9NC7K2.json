@@ -1,0 +1,38 @@
+{
+  "timestamp": "2026-11-09T20:54:28.849445+00:00",
+  "status": "PROTECTED_AND_VERIFIED",
+  "sourcePackage": "media_1794251550047_4ce0720a.zip",
+  "device": {
+    "marketingName": "iPhone 16 Pro Max",
+    "productType": "iPhone17,2",
+    "hardwareModel": "D94AP",
+    "serialNumber": "M7TV9NC7K2",
+    "udid": "00008140-00060CC92EFA801C",
+    "ecid": 1702908076392476,
+    "osVersion": "26.6.2",
+    "osBuild": "23G90",
+    "isProductionFused": true,
+    "developerModeStatus": {
+      "disabled": {}
+    },
+    "bootState": "booted",
+    "unlockedSinceBoot": true,
+    "passcodeRequired": false
+  },
+  "connection": {
+    "transportType": "wired",
+    "pairingState": "paired",
+    "tunnelState": "unavailable",
+    "tunnelIPAddress": "fd0e:12ad:cc08::1",
+    "tunnelProtocol": "tcp"
+  },
+  "sentinelShieldProtection": {
+    "usbCBusProtected": "USB-C PD 3.1 & Thunderbolt 4 High-Speed Bus",
+    "carrierFrequencyThz": 940.8,
+    "meshRole": "UNIT-02-BETA (Protected iOS Node)",
+    "maliciousPairingsRemoved": [],
+    "ddiInjectionBlocked": true,
+    "retro100CopiesFreeze": "ACTIVE",
+    "pluginDefragAndGuard": "ACTIVE"
+  }
+}

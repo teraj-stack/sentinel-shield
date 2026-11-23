@@ -1,0 +1,1195 @@
+{
+  "schemaVersion": "SENTINEL-AIRGAP-v4.2",
+  "exportType": "FULL_THREAT_LEDGER",
+  "metadata": {
+    "systemUnit": "SENTINEL-AIRGAP-DEFENSE-NODE",
+    "exportTimestamp": "2026-10-24T15:01:18.626Z",
+    "exportTimestampHuman": "24.10.2026, 17:01:18 CEST",
+    "classification": "OFFLINE DEFENSE MONOLITH // AIR-GAP SYNC VERIFIED",
+    "totalNeutralizedThreats": 9,
+    "totalGnidaSignatures": 9,
+    "totalFocusHijackIncidents": 4,
+    "syncChecksumSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b78521361478d",
+    "compatibility": "Sentinel Shield v1.0 - v5.x / Offline Python & PowerShell Daemons",
+    "airGapSyncHash": "AIRGAP-SYNC-1361478D-9T"
+  },
+  "gnidaSignatures": [
+    {
+      "signatureId": "SIG-GNIDA-0001-threat-adware-popup-storm",
+      "threatName": "Adware.Win32.PopupStorm.Gen",
+      "alias": "TopMost Adware Cascade & HWND Hijacker v9.1",
+      "category": "Popup Storm",
+      "severity": "CRITICAL",
+      "sha256Hash": "9a77b819f03cc09b821415df8a149c4f6b2181de847bbd3876e481134015dc9a",
+      "entropy": 7.96,
+      "detectedSignatures": [
+        "Category: Popup Storm",
+        "Severity: CRITICAL",
+        "Status: ZNISZCZONY (100% PURGED)",
+        "CreateWindowExW(WS_POPUP)",
+        "SetWindowPos(HWND_TOPMOST)",
+        "SetWindowsHookExW",
+        "CreateProcessW"
+      ],
+      "processKeywords": [
+        "adware_win32_popupstorm_gen",
+        "topmost_adware_cascade___hwnd_hijacker_v9_1",
+        "popup_storm"
+      ],
+      "abusedApis": [
+        "CreateWindowExW(WS_POPUP)",
+        "SetWindowPos(HWND_TOPMOST)",
+        "SetWindowsHookExW",
+        "CreateProcessW"
+      ],
+      "peStructuralFlags": [
+        "WS_EX_TOPMOST_HIJACK",
+        "ZORDER_LOCKED_0x00000008",
+        "WH_KEYBOARD_LL_HOOK",
+        "RAWINPUT_CAPTURE"
+      ],
+      "yaraRule": "rule Sentinel_Gnida_Adware_Win32_PopupStorm_Gen {\n    meta:\n        description = \"Agresywny generator wyskakujących okien i pętli HWND_TOPMOST. Tworzy kaskadę nieusuwalnych okien dia\"\n        threat_category = \"Popup Storm\"\n        severity = \"CRITICAL\"\n        sha256 = \"9a77b819f03cc09b821415df8a149c4f6b2181de847bbd3876e481134015dc9a\"\n        entropy = \"7.96\"\n        neutralized_at = \"2026-08-17 03:14:22 UTC\"\n    strings:\n        $hash = \"9a77b819f03cc09b821415df8a149c4f6b2181de847bbd3876e481134015dc9a\"\n        $str1 = \"Adware.Win32.PopupStorm.Gen\"\n        $api_0 = \"Adware.Win32.PopupStorm.Gen\" nocase\n        $api_1 = \"TopMost Adware Cascade & HWND Hijacker v9.1\" nocase\n        $api_2 = \"CreateWindowExW(WS_POPUP)\" nocase\n    condition:\n        $hash or ($str1 and 1 of ($api_*))\n}",
+      "freezeCodeSnippet": "import ctypes, psutil, winreg\nuser32 = ctypes.windll.user32\nntdll = ctypes.windll.ntdll\n\ndef kill_popup_adware():\n    for p in psutil.process_iter(['pid', 'name']):\n        if 'adware' in (p.info['name'] or '').lower() or 'popup' in (p.info['name'] or '').lower():\n            h = ctypes.windll.kernel32.OpenProcess(0x1F0FFF, False, p.info['pid'])\n            if h:\n                ntdll.NtSuspendProcess(h)\n                ctypes.windll.kernel32.TerminateProcess(h, 0xDEADBEEF)\n                ctypes.windll.kernel32.CloseHandle(h)\n                print(f\"[+] Zniszczono proces adware: {p.info['name']} (PID: {p.info['pid']})\")\n",
+      "firstObserved": "2026-02-18",
+      "neutralizedTimestamp": "2026-08-17 03:14:22 UTC",
+      "status": "ZNISZCZONY (100% PURGED)",
+      "quarantineProof": "Wszystkie HWND zniszczone | Pamięć RAM czysta | Klucze rejestru zneutralizowane | Sygnatura PE zamazana zerami."
+    },
+    {
+      "signatureId": "SIG-GNIDA-0002-threat-flutter-locker",
+      "threatName": "FlutterLocker.Win32.OverlayKiller",
+      "alias": "TopMost Window Trap v4.2",
+      "category": "Screen Locker",
+      "severity": "CRITICAL",
+      "sha256Hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "entropy": 7.94,
+      "detectedSignatures": [
+        "Category: Screen Locker",
+        "Severity: CRITICAL",
+        "Status: ZNISZCZONY (100% PURGED)",
+        "SetWindowPos (HWND_TOPMOST)",
+        "SetForegroundWindow",
+        "SetWindowsHookExW (WH_KEYBOARD_LL)",
+        "flutter_windows.dll::FlutterDesktopEngineRun"
+      ],
+      "processKeywords": [
+        "flutterlocker_win32_overlaykiller",
+        "topmost_window_trap_v4_2",
+        "screen_locker"
+      ],
+      "abusedApis": [
+        "SetWindowPos (HWND_TOPMOST)",
+        "SetForegroundWindow",
+        "SetWindowsHookExW (WH_KEYBOARD_LL)",
+        "flutter_windows.dll::FlutterDesktopEngineRun"
+      ],
+      "peStructuralFlags": [
+        "WS_EX_TOPMOST_HIJACK",
+        "ZORDER_LOCKED_0x00000008",
+        "WH_KEYBOARD_LL_HOOK",
+        "RAWINPUT_CAPTURE",
+        "DIRECTFLIP_FULLSCREEN",
+        "DWM_COMPOSITION_OVERLAY"
+      ],
+      "yaraRule": "rule Sentinel_Gnida_FlutterLocker_Win32_OverlayKiller {\n    meta:\n        description = \"Zaawansowana nakładka pełnoekranowa skompilowana w technologii Flutter Desktop (flutter_windows.dll)\"\n        threat_category = \"Screen Locker\"\n        severity = \"CRITICAL\"\n        sha256 = \"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"\n        entropy = \"7.94\"\n        neutralized_at = \"2026-08-16 04:12:09 UTC\"\n    strings:\n        $hash = \"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"\n        $str1 = \"FlutterLocker.Win32.OverlayKiller\"\n        $api_0 = \"FlutterLocker.Win32.OverlayKiller\" nocase\n        $api_1 = \"TopMost Window Trap v4.2\" nocase\n        $api_2 = \"SetWindowPos (HWND_TOPMOST)\" nocase\n    condition:\n        $hash or ($str1 and 1 of ($api_*))\n}",
+      "freezeCodeSnippet": "import ctypes, psutil, os\n\ndef slaughter_flutter_locker():\n    ntdll = ctypes.windll.ntdll\n    k32 = ctypes.windll.kernel32\n    u32 = ctypes.windll.user32\n    \n    for proc in psutil.process_iter(['pid', 'name', 'exe']):\n        name = (proc.info['name'] or '').lower()\n        if 'flutter' in name or 'overlay' in name:\n            pid = proc.info['pid']\n            h = k32.OpenProcess(0x1F0FFF, False, pid)\n            if h:\n                ntdll.NtSuspendProcess(h)\n                k32.TerminateProcess(h, 0xDEADBEEF)\n                k32.CloseHandle(h)\n            if proc.info['exe'] and os.path.exists(proc.info['exe']):\n                with open(proc.info['exe'], 'r+b') as f:\n                    f.seek(0)\n                    f.write(b'\\x00' * 1024)\n                os.system(f'icacls \"{proc.info[\"exe\"]}\" /deny Everyone:(F) >nul 2>&1')\n",
+      "firstObserved": "2025-11-14",
+      "neutralizedTimestamp": "2026-08-16 04:12:09 UTC",
+      "status": "ZNISZCZONY (100% PURGED)",
+      "quarantineProof": "SHA256 binarnego wraku: e3b0c44298fc1c14... | Uprawnienia NTFS: ACL DENY EVERYONE | Nagłówek PE: 0x00000000 (WIPED)"
+    },
+    {
+      "signatureId": "SIG-GNIDA-0003-threat-redline-stealer",
+      "threatName": "RedLine.Stealer.HookMaster",
+      "alias": "RedLine Credential & Overlay Spy",
+      "category": "Trojan Overlay",
+      "severity": "CRITICAL",
+      "sha256Hash": "a7c9381fbb4621c54b7c8df0c36b41295b958c2794c4897f262a4d33457a8bf1",
+      "entropy": 7.88,
+      "detectedSignatures": [
+        "Category: Trojan Overlay",
+        "Severity: CRITICAL",
+        "Status: ZNISZCZONY (100% PURGED)",
+        "CreateRemoteThread",
+        "VirtualAllocEx",
+        "WriteProcessMemory",
+        "SetClipboardData",
+        "SetWindowLongPtrA (WS_EX_LAYERED)"
+      ],
+      "processKeywords": [
+        "redline_stealer_hookmaster",
+        "redline_credential___overlay_spy",
+        "trojan_overlay"
+      ],
+      "abusedApis": [
+        "CreateRemoteThread",
+        "VirtualAllocEx",
+        "WriteProcessMemory",
+        "SetClipboardData",
+        "SetWindowLongPtrA (WS_EX_LAYERED)"
+      ],
+      "peStructuralFlags": [
+        "DIRECTFLIP_FULLSCREEN",
+        "DWM_COMPOSITION_OVERLAY"
+      ],
+      "yaraRule": "rule Sentinel_Gnida_RedLine_Stealer_HookMaster {\n    meta:\n        description = \"Groźny infostealer połączony z przezroczystą nakładką GUI na przeglądarki Chrome, Brave i Edge. Podm\"\n        threat_category = \"Trojan Overlay\"\n        severity = \"CRITICAL\"\n        sha256 = \"a7c9381fbb4621c54b7c8df0c36b41295b958c2794c4897f262a4d33457a8bf1\"\n        entropy = \"7.88\"\n        neutralized_at = \"2026-08-16 02:45:11 UTC\"\n    strings:\n        $hash = \"a7c9381fbb4621c54b7c8df0c36b41295b958c2794c4897f262a4d33457a8bf1\"\n        $str1 = \"RedLine.Stealer.HookMaster\"\n        $api_0 = \"RedLine.Stealer.HookMaster\" nocase\n        $api_1 = \"RedLine Credential & Overlay Spy\" nocase\n        $api_2 = \"CreateRemoteThread\" nocase\n    condition:\n        $hash or ($str1 and 1 of ($api_*))\n}",
+      "freezeCodeSnippet": "import winreg, psutil, os\n\ndef purge_redline():\n    for p in psutil.process_iter(['pid', 'name']):\n        if p.info['name'] and 'redline' in p.info['name'].lower():\n            p.kill()\n    key_path = r\"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options\\redline.exe\"\n    try:\n        with winreg.CreateKey(winreg.HKEY_LOCAL_MACHINE, key_path) as key:\n            winreg.SetValueEx(key, \"Debugger\", 0, winreg.REG_SZ, \"systray_blackhole.exe\")\n    except Exception as e:\n        print(f\"Błąd IFEO: {e}\")\n",
+      "firstObserved": "2025-08-20",
+      "neutralizedTimestamp": "2026-08-16 02:45:11 UTC",
+      "status": "ZNISZCZONY (100% PURGED)",
+      "quarantineProof": "Status: 100% ZNISZCZONY | C2 zablokowany | Rejestr IFEO zaryglowany"
+    },
+    {
+      "signatureId": "SIG-GNIDA-0004-threat-hermetic-wiper",
+      "threatName": "HermeticWiper.MasterAnnihilator",
+      "alias": "FoxBlade / DataWiper x64",
+      "category": "Process Wiper",
+      "severity": "EXTREME",
+      "sha256Hash": "0385e05d9299491a62d08a543f49377be834dbba6d66e74b7c1abf83427be5fa",
+      "entropy": 7.97,
+      "detectedSignatures": [
+        "Category: Process Wiper",
+        "Severity: EXTREME",
+        "Status: ZNISZCZONY (100% PURGED)",
+        "CreateFileW (PhysicalDrive)",
+        "DeviceIoControl",
+        "AdjustTokenPrivileges",
+        "NtRaiseHardError",
+        "FSCTL_LOCK_VOLUME"
+      ],
+      "processKeywords": [
+        "hermeticwiper_masterannihilator",
+        "foxblade___datawiper_x64",
+        "process_wiper"
+      ],
+      "abusedApis": [
+        "CreateFileW (PhysicalDrive)",
+        "DeviceIoControl",
+        "AdjustTokenPrivileges",
+        "NtRaiseHardError",
+        "FSCTL_LOCK_VOLUME"
+      ],
+      "peStructuralFlags": [
+        "VSS_SHADOW_PURGE",
+        "MBR_RAW_WRITE"
+      ],
+      "yaraRule": "rule Sentinel_Gnida_HermeticWiper_MasterAnnihilator {\n    meta:\n        description = \"Destrukcyjny malware niszczący Master Boot Record (MBR), tablice partycji GUID (GPT) oraz struktury \"\n        threat_category = \"Process Wiper\"\n        severity = \"EXTREME\"\n        sha256 = \"0385e05d9299491a62d08a543f49377be834dbba6d66e74b7c1abf83427be5fa\"\n        entropy = \"7.97\"\n        neutralized_at = \"2026-08-16 01:19:30 UTC\"\n    strings:\n        $hash = \"0385e05d9299491a62d08a543f49377be834dbba6d66e74b7c1abf83427be5fa\"\n        $str1 = \"HermeticWiper.MasterAnnihilator\"\n        $api_0 = \"HermeticWiper.MasterAnnihilator\" nocase\n        $api_1 = \"FoxBlade / DataWiper x64\" nocase\n        $api_2 = \"CreateFileW (PhysicalDrive)\" nocase\n    condition:\n        $hash or ($str1 and 1 of ($api_*))\n}",
+      "freezeCodeSnippet": "import ctypes, psutil\n\ndef purge_wiper():\n    k32 = ctypes.windll.kernel32\n    for p in psutil.process_iter(['pid', 'name']):\n        if p.info['name'] and any(x in p.info['name'].lower() for x in ['wiper', 'hermetic', 'foxblade']):\n            h = k32.OpenProcess(0x1, False, p.info['pid'])\n            if h:\n                k32.TerminateProcess(h, 0)\n                k32.CloseHandle(h)\n            p.kill()\n",
+      "firstObserved": "2024-02-23",
+      "neutralizedTimestamp": "2026-08-16 01:19:30 UTC",
+      "status": "ZNISZCZONY (100% PURGED)",
+      "quarantineProof": "Status: 100% ZNISZCZONY | MBR nienaruszony | Sterownik usunięty | Entropia binarnego wraku: 0.00 (wyczyszczony)"
+    },
+    {
+      "signatureId": "SIG-GNIDA-0005-threat-blackcat-alphv",
+      "threatName": "BlackCat/ALPHV.LockScreenExtortionist",
+      "alias": "ALPHV Rust-Locker v3",
+      "category": "Ransomware",
+      "severity": "CRITICAL",
+      "sha256Hash": "bc88712dfa7c8742c3d1976a47a46973e46b9a896d9333333333333333333333",
+      "entropy": 7.91,
+      "detectedSignatures": [
+        "Category: Ransomware",
+        "Severity: CRITICAL",
+        "Status: ZNISZCZONY (100% PURGED)",
+        "OpenSCManagerW",
+        "EnumServicesStatusExW",
+        "CryptGenRandom",
+        "vssadmin.exe",
+        "SetWindowPos"
+      ],
+      "processKeywords": [
+        "blackcat_alphv_lockscreenextortionist",
+        "alphv_rust_locker_v3",
+        "ransomware"
+      ],
+      "abusedApis": [
+        "OpenSCManagerW",
+        "EnumServicesStatusExW",
+        "CryptGenRandom",
+        "vssadmin.exe",
+        "SetWindowPos"
+      ],
+      "peStructuralFlags": [
+        "WS_EX_TOPMOST_HIJACK",
+        "ZORDER_LOCKED_0x00000008",
+        "VSS_SHADOW_PURGE",
+        "MBR_RAW_WRITE"
+      ],
+      "yaraRule": "rule Sentinel_Gnida_BlackCat_ALPHV_LockScreenExtortionist {\n    meta:\n        description = \"Napisany w języku Rust ransomware blokujący ekran agresywnym oknem żądania okupu z licznikami czasu,\"\n        threat_category = \"Ransomware\"\n        severity = \"CRITICAL\"\n        sha256 = \"bc88712dfa7c8742c3d1976a47a46973e46b9a896d9333333333333333333333\"\n        entropy = \"7.91\"\n        neutralized_at = \"2026-08-16 03:02:18 UTC\"\n    strings:\n        $hash = \"bc88712dfa7c8742c3d1976a47a46973e46b9a896d9333333333333333333333\"\n        $str1 = \"BlackCat/ALPHV.LockScreenExtortionist\"\n        $api_0 = \"BlackCat/ALPHV.LockScreenExtortionist\" nocase\n        $api_1 = \"ALPHV Rust-Locker v3\" nocase\n        $api_2 = \"OpenSCManagerW\" nocase\n    condition:\n        $hash or ($str1 and 1 of ($api_*))\n}",
+      "freezeCodeSnippet": "import os, psutil\n\ndef purge_blackcat():\n    for proc in psutil.process_iter(['pid', 'name']):\n        if proc.info['name'] and ('blackcat' in proc.info['name'].lower() or 'alphv' in proc.info['name'].lower()):\n            proc.kill()\n    # Odblokowanie menedżera zadań\n    os.system('reg delete \"HKCU\\\\Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Policies\\\\System\" /v DisableTaskMgr /f >nul 2>&1')\n",
+      "firstObserved": "2025-06-11",
+      "neutralizedTimestamp": "2026-08-16 03:02:18 UTC",
+      "status": "ZNISZCZONY (100% PURGED)",
+      "quarantineProof": "Status: 100% ZNISZCZONY | Pliki ocalone | Kopie VSS zachowane"
+    },
+    {
+      "signatureId": "SIG-GNIDA-0006-threat-pylock-screenfreeze",
+      "threatName": "PyLock.ScreenFreeze.v4",
+      "alias": "Python Tkinter/PyQt Fullscreen Grabber",
+      "category": "Screen Locker",
+      "severity": "HIGH",
+      "sha256Hash": "91f82c479426f8d098e98ec7a922374b5952f44485501869e5d41c96cb623912",
+      "entropy": 7.62,
+      "detectedSignatures": [
+        "Category: Screen Locker",
+        "Severity: HIGH",
+        "Status: ZNISZCZONY (100% PURGED)",
+        "Tkinter::grab_set_global",
+        "wm_overrideredirect",
+        "attributes(-topmost)",
+        "PyInstaller Bootloader"
+      ],
+      "processKeywords": [
+        "pylock_screenfreeze_v4",
+        "python_tkinter_pyqt_fullscreen_grabber",
+        "screen_locker"
+      ],
+      "abusedApis": [
+        "Tkinter::grab_set_global",
+        "wm_overrideredirect",
+        "attributes(-topmost)",
+        "PyInstaller Bootloader"
+      ],
+      "peStructuralFlags": [
+        "DIRECTFLIP_FULLSCREEN",
+        "DWM_COMPOSITION_OVERLAY"
+      ],
+      "yaraRule": "rule Sentinel_Gnida_PyLock_ScreenFreeze_v4 {\n    meta:\n        description = \"Skrypt w języku Python spakowany do pojedynczego pliku .exe (PyInstaller), tworzący okno Tkinter/PyQ\"\n        threat_category = \"Screen Locker\"\n        severity = \"HIGH\"\n        sha256 = \"91f82c479426f8d098e98ec7a922374b5952f44485501869e5d41c96cb623912\"\n        entropy = \"7.62\"\n        neutralized_at = \"2026-08-16 00:54:12 UTC\"\n    strings:\n        $hash = \"91f82c479426f8d098e98ec7a922374b5952f44485501869e5d41c96cb623912\"\n        $str1 = \"PyLock.ScreenFreeze.v4\"\n        $api_0 = \"PyLock.ScreenFreeze.v4\" nocase\n        $api_1 = \"Python Tkinter/PyQt Fullscreen Grabber\" nocase\n        $api_2 = \"Tkinter::grab_set_global\" nocase\n    condition:\n        $hash or ($str1 and 1 of ($api_*))\n}",
+      "freezeCodeSnippet": "import psutil, os\n\ndef kill_pylock():\n    for p in psutil.process_iter(['pid', 'name']):\n        if p.info['name'] and 'pylock' in p.info['name'].lower():\n            p.kill()\n",
+      "firstObserved": "2025-09-02",
+      "neutralizedTimestamp": "2026-08-16 00:54:12 UTC",
+      "status": "ZNISZCZONY (100% PURGED)",
+      "quarantineProof": "Status: 100% ZNISZCZONY | Plik tymczasowy _MEI* wyczyszczony z %TEMP%"
+    },
+    {
+      "signatureId": "SIG-GNIDA-0007-threat-xmrig-ghostminer",
+      "threatName": "XMRig.HiddenGhostMiner.x64",
+      "alias": "GhostMiner Overlay Stealth",
+      "category": "Stealth Miner",
+      "severity": "HIGH",
+      "sha256Hash": "4a3b2c1d0e9f8a7b6c5d4e3f2a1b0c9d8e7f6a5b4c3d2e1f0a9b8c7d6e5f4a3b",
+      "entropy": 7.79,
+      "detectedSignatures": [
+        "Category: Stealth Miner",
+        "Severity: HIGH",
+        "Status: ZNISZCZONY (100% PURGED)",
+        "NtUnmapViewOfSection",
+        "VirtualAllocEx",
+        "SetThreadContext",
+        "FindWindowA"
+      ],
+      "processKeywords": [
+        "xmrig_hiddenghostminer_x64",
+        "ghostminer_overlay_stealth",
+        "stealth_miner"
+      ],
+      "abusedApis": [
+        "NtUnmapViewOfSection",
+        "VirtualAllocEx",
+        "SetThreadContext",
+        "FindWindowA"
+      ],
+      "peStructuralFlags": [
+        "CPU_AFFINITY_HIJACK",
+        "STRATUM_PROTOCOL_PAYLOAD"
+      ],
+      "yaraRule": "rule Sentinel_Gnida_XMRig_HiddenGhostMiner_x64 {\n    meta:\n        description = \"Ukryta koparka kryptowalut Monero (XMR), która nakłada niewidoczną, przezroczystą warstwę na ekran i\"\n        threat_category = \"Stealth Miner\"\n        severity = \"HIGH\"\n        sha256 = \"4a3b2c1d0e9f8a7b6c5d4e3f2a1b0c9d8e7f6a5b4c3d2e1f0a9b8c7d6e5f4a3b\"\n        entropy = \"7.79\"\n        neutralized_at = \"2026-08-16 05:11:02 UTC\"\n    strings:\n        $hash = \"4a3b2c1d0e9f8a7b6c5d4e3f2a1b0c9d8e7f6a5b4c3d2e1f0a9b8c7d6e5f4a3b\"\n        $str1 = \"XMRig.HiddenGhostMiner.x64\"\n        $api_0 = \"XMRig.HiddenGhostMiner.x64\" nocase\n        $api_1 = \"GhostMiner Overlay Stealth\" nocase\n        $api_2 = \"NtUnmapViewOfSection\" nocase\n    condition:\n        $hash or ($str1 and 1 of ($api_*))\n}",
+      "freezeCodeSnippet": "import os, psutil\n\ndef purge_miner():\n    for p in psutil.process_iter(['pid', 'name', 'cpu_percent']):\n        if p.info['name'] and any(x in p.info['name'].lower() for x in ['xmrig', 'ghostminer', 'wininit_miner']):\n            p.kill()\n    os.system('schtasks /Delete /TN \"SystemUpdateTask\" /F >nul 2>&1')\n",
+      "firstObserved": "2025-10-05",
+      "neutralizedTimestamp": "2026-08-16 05:11:02 UTC",
+      "status": "ZNISZCZONY (100% PURGED)",
+      "quarantineProof": "Status: 100% ZNISZCZONY | Obciążenie CPU: 0% | Harmonogram oczyszczony"
+    },
+    {
+      "signatureId": "SIG-GNIDA-0008-threat-darkwatchman-rat",
+      "threatName": "DarkWatchman.RAT.RegistryStealth",
+      "alias": "Fileless Registry Resident Trojan",
+      "category": "Rootkit Hook",
+      "severity": "EXTREME",
+      "sha256Hash": "c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2",
+      "entropy": 7.85,
+      "detectedSignatures": [
+        "Category: Rootkit Hook",
+        "Severity: EXTREME",
+        "Status: ZNISZCZONY (100% PURGED)",
+        "RegSetValueExW",
+        "mshta.exe",
+        "SetWindowsHookEx",
+        "DnsQuery_W"
+      ],
+      "processKeywords": [
+        "darkwatchman_rat_registrystealth",
+        "fileless_registry_resident_trojan",
+        "rootkit_hook"
+      ],
+      "abusedApis": [
+        "RegSetValueExW",
+        "mshta.exe",
+        "SetWindowsHookEx",
+        "DnsQuery_W"
+      ],
+      "peStructuralFlags": [
+        "WH_KEYBOARD_LL_HOOK",
+        "RAWINPUT_CAPTURE"
+      ],
+      "yaraRule": "rule Sentinel_Gnida_DarkWatchman_RAT_RegistryStealth {\n    meta:\n        description = \"Niezwykle zaawansowany trojan bezplikowy (Fileless Malware), który ukrywa cały swój payload w klucza\"\n        threat_category = \"Rootkit Hook\"\n        severity = \"EXTREME\"\n        sha256 = \"c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2\"\n        entropy = \"7.85\"\n        neutralized_at = \"2026-08-16 03:33:45 UTC\"\n    strings:\n        $hash = \"c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2\"\n        $str1 = \"DarkWatchman.RAT.RegistryStealth\"\n        $api_0 = \"DarkWatchman.RAT.RegistryStealth\" nocase\n        $api_1 = \"Fileless Registry Resident Trojan\" nocase\n        $api_2 = \"RegSetValueExW\" nocase\n    condition:\n        $hash or ($str1 and 1 of ($api_*))\n}",
+      "freezeCodeSnippet": "import winreg, psutil, os\n\ndef purge_darkwatchman():\n    for p in psutil.process_iter(['pid', 'name']):\n        if p.info['name'] and p.info['name'].lower() in ['mshta.exe', 'wscript.exe', 'cscript.exe']:\n            p.kill()\n    os.system('ipconfig /flushdns >nul 2>&1')\n",
+      "firstObserved": "2025-07-19",
+      "neutralizedTimestamp": "2026-08-16 03:33:45 UTC",
+      "status": "ZNISZCZONY (100% PURGED)",
+      "quarantineProof": "Status: 100% ZNISZCZONY | Rejestr wyczyszczony | DNS zabezpieczony"
+    },
+    {
+      "signatureId": "SIG-GNIDA-0009-threat-pegasus-overlay",
+      "threatName": "Pegasus.OverlayGhost.ZeroDay",
+      "alias": "Mobile & Desktop Frame Mimic Spy",
+      "category": "Trojan Overlay",
+      "severity": "EXTREME",
+      "sha256Hash": "f0e1d2c3b4a5968778695a4b3c2d1e0f0e1d2c3b4a5968778695a4b3c2d1e0f0",
+      "entropy": 7.99,
+      "detectedSignatures": [
+        "Category: Trojan Overlay",
+        "Severity: EXTREME",
+        "Status: ZNISZCZONY (100% PURGED)",
+        "DwmRegisterThumbnail",
+        "DirectComposition::CreateTarget",
+        "OpenProcess(dwm.exe)"
+      ],
+      "processKeywords": [
+        "pegasus_overlayghost_zeroday",
+        "mobile___desktop_frame_mimic_spy",
+        "trojan_overlay"
+      ],
+      "abusedApis": [
+        "DwmRegisterThumbnail",
+        "DirectComposition::CreateTarget",
+        "OpenProcess(dwm.exe)"
+      ],
+      "peStructuralFlags": [
+        "DIRECTFLIP_FULLSCREEN",
+        "DWM_COMPOSITION_OVERLAY"
+      ],
+      "yaraRule": "rule Sentinel_Gnida_Pegasus_OverlayGhost_ZeroDay {\n    meta:\n        description = \"Zaawansowany szpiegowski moduł nakładkowy nowej generacji. Tworzy idealne, pixel-perfect klony okien\"\n        threat_category = \"Trojan Overlay\"\n        severity = \"EXTREME\"\n        sha256 = \"f0e1d2c3b4a5968778695a4b3c2d1e0f0e1d2c3b4a5968778695a4b3c2d1e0f0\"\n        entropy = \"7.99\"\n        neutralized_at = \"2026-08-16 04:55:00 UTC\"\n    strings:\n        $hash = \"f0e1d2c3b4a5968778695a4b3c2d1e0f0e1d2c3b4a5968778695a4b3c2d1e0f0\"\n        $str1 = \"Pegasus.OverlayGhost.ZeroDay\"\n        $api_0 = \"Pegasus.OverlayGhost.ZeroDay\" nocase\n        $api_1 = \"Mobile & Desktop Frame Mimic Spy\" nocase\n        $api_2 = \"DwmRegisterThumbnail\" nocase\n    condition:\n        $hash or ($str1 and 1 of ($api_*))\n}",
+      "freezeCodeSnippet": "import os, psutil\n\ndef purge_pegasus_overlay():\n    # Restart Desktop Window Manager w celu usunięcia złośliwych bibliotek\n    for p in psutil.process_iter(['pid', 'name']):\n        if p.info['name'] and 'pegasus' in p.info['name'].lower():\n            p.kill()\n    os.system('taskkill /f /im dwm.exe >nul 2>&1')\n",
+      "firstObserved": "2025-12-01",
+      "neutralizedTimestamp": "2026-08-16 04:55:00 UTC",
+      "status": "ZNISZCZONY (100% PURGED)",
+      "quarantineProof": "Status: 100% ZNISZCZONY | DWM zregenerowany | Zero wycieku danych"
+    }
+  ],
+  "neutralizedThreats": [
+    {
+      "id": "threat-adware-popup-storm",
+      "name": "Adware.Win32.PopupStorm.Gen",
+      "alias": "TopMost Adware Cascade & HWND Hijacker v9.1",
+      "category": "Popup Storm",
+      "severity": "CRITICAL",
+      "status": "ZNISZCZONY (100% PURGED)",
+      "firstSpotted": "2026-02-18",
+      "neutralizedAt": "2026-08-17 03:14:22 UTC",
+      "targetOS": [
+        "windows",
+        "linux",
+        "macos"
+      ],
+      "sha256Hash": "9a77b819f03cc09b821415df8a149c4f6b2181de847bbd3876e481134015dc9a",
+      "entropy": 7.96,
+      "description": "Agresywny generator wyskakujących okien i pętli HWND_TOPMOST. Tworzy kaskadę nieusuwalnych okien dialogowych reklamujących fałszywe oprogramowanie, przejmuje komunikaty WM_CLOSE i resetuje pozycję okna w pętli 60 Hz przy próbie zamknięcia.",
+      "aggressionMechanism": {
+        "title": "Pętla Kaskady Okien Dialogowych & Ignorowanie WM_CLOSE",
+        "summary": "Podpięcie hooka okiennego i ignorowanie sygnałów zamknięcia przez ponowne generowanie HWND w wątkach potomnych.",
+        "technicalDetails": [
+          "Przechwytywanie procedury WndProc okna i ignorowanie komunikatów WM_CLOSE oraz WM_DESTROY.",
+          "Wymuszanie styli WS_POPUP | WS_EX_TOPMOST | WS_EX_LAYERED w celu uniemożliwienia przesunięcia okna.",
+          "Wielowątkowe generowanie 10 kolejnych okien potomnych w przypadku wykrycia próby kliknięcia przycisku [X].",
+          "Podpięcie mechanizmu autostartu w rejestrze i ukrytego zadania harmonogramu Schtasks."
+        ],
+        "apisAbused": [
+          "CreateWindowExW(WS_POPUP)",
+          "SetWindowPos(HWND_TOPMOST)",
+          "SetWindowsHookExW",
+          "CreateProcessW"
+        ]
+      },
+      "infectionVector": {
+        "channel": "Zatruta paczka instalacyjna freeware / Fałszywy instalator kodeków wideo",
+        "method": "Wstrzyknięcie biblioteki popup_engine.dll do procesów użytkownika i instalacja demona.",
+        "payloadType": "PE32+ Executable z zaszyfrowanymi zasobami HTML/DHTML dla okien dialogowych.",
+        "vulnerabilityCve": "CVE-2025-4190 (Desktop Window Manager Unsandboxed Focus Stealing)",
+        "exploitChain": [
+          "1. Uruchomienie instalatora sponsorowanego z dołączonym dropperem adware.",
+          "2. Upuszczenie binarnego payloadu do %LOCALAPPDATA%\\Temp\\adware_alert_daemon.exe.",
+          "3. Inicjalizacja pętli tworzenia okien popup w tle.",
+          "4. Zablokowanie zamykania przez dynamiczną kaskadę HWND."
+        ]
+      },
+      "neutralizationDetails": {
+        "methodName": "Trwałe Uszkodzenie Pętli Okien (Window Decapitation) + Czyszczenie Rejestru",
+        "slaughterMechanism": "Błyskawiczne zrzucenie styli okna (SetWindowLongPtr), zniszczenie uchwytów HWND, zamrożenie wątków w RAM (NtSuspendProcess) oraz likwidacja kluczy autostartu.",
+        "executionSteps": [
+          {
+            "step": 1,
+            "action": "Zdjęcie flag WS_EX_TOPMOST oraz WS_POPUP z każdego okna kaskady",
+            "targetApi": "user32.SetWindowLongPtrW(hwnd, GWL_EXSTYLE, exStyle & ~WS_EX_TOPMOST)",
+            "result": "Wszystkie okna pozbawione priorytetu Z-Order",
+            "timestamp": "00:00.001"
+          },
+          {
+            "step": 2,
+            "action": "Wymuszone zniszczenie uchwytów HWND bez wywoływania procedury WndProc agresora",
+            "targetApi": "user32.DestroyWindow(hwnd)",
+            "result": "Pętla okien zerwana, okna zlikwidowane z bufora DWM",
+            "timestamp": "00:00.003"
+          },
+          {
+            "step": 3,
+            "action": "Binarne zamrożenie i uśmiercenie procesu matki adware",
+            "targetApi": "ntdll.NtSuspendProcess + TerminateProcess(0xDEADBEEF)",
+            "result": "Proces adware_alert_daemon.exe spopielony",
+            "timestamp": "00:00.006"
+          },
+          {
+            "step": 4,
+            "action": "Eradikacja wpisów autostartu i zaplanowanych zadań",
+            "targetApi": "RegDeleteValueW(HKCU\\...\\Run) + schtasks /delete /tn AdwareTask /f",
+            "result": "Wszystkie wektory powrotu adware trwale usunięte",
+            "timestamp": "00:00.012"
+          }
+        ],
+        "quarantineProof": "Wszystkie HWND zniszczone | Pamięć RAM czysta | Klucze rejestru zneutralizowane | Sygnatura PE zamazana zerami.",
+        "pythonKillSnippet": "import ctypes, psutil, winreg\nuser32 = ctypes.windll.user32\nntdll = ctypes.windll.ntdll\n\ndef kill_popup_adware():\n    for p in psutil.process_iter(['pid', 'name']):\n        if 'adware' in (p.info['name'] or '').lower() or 'popup' in (p.info['name'] or '').lower():\n            h = ctypes.windll.kernel32.OpenProcess(0x1F0FFF, False, p.info['pid'])\n            if h:\n                ntdll.NtSuspendProcess(h)\n                ctypes.windll.kernel32.TerminateProcess(h, 0xDEADBEEF)\n                ctypes.windll.kernel32.CloseHandle(h)\n                print(f\"[+] Zniszczono proces adware: {p.info['name']} (PID: {p.info['pid']})\")\n"
+      }
+    },
+    {
+      "id": "threat-flutter-locker",
+      "name": "FlutterLocker.Win32.OverlayKiller",
+      "alias": "TopMost Window Trap v4.2",
+      "category": "Screen Locker",
+      "severity": "CRITICAL",
+      "status": "ZNISZCZONY (100% PURGED)",
+      "firstSpotted": "2025-11-14",
+      "neutralizedAt": "2026-08-16 04:12:09 UTC",
+      "targetOS": [
+        "windows",
+        "linux",
+        "macos"
+      ],
+      "sha256Hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "entropy": 7.94,
+      "description": "Zaawansowana nakładka pełnoekranowa skompilowana w technologii Flutter Desktop (flutter_windows.dll). Przejmuje pełny ekran w trybie HWND_TOPMOST, kradnie fokus co 10 milisekund i blokuje kombinacje Alt+Tab, Win+D oraz menedżer zadań.",
+      "aggressionMechanism": {
+        "title": "Agresywne Przejęcie Z-Order i Kradzież Fokusu Win32",
+        "summary": "Manipulacja oknem za pomocą SetWindowPos(HWND_TOPMOST) w pętli 100 Hz oraz wywołanie SetForegroundWindow z blokadą raw input listenera.",
+        "technicalDetails": [
+          "Wywołanie SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, screen_w, screen_h, SWP_SHOWWINDOW | SWP_NOACTIVATE) w pętli zdarzeń.",
+          "Podpięcie biblioteki bitsdojo_window / window_manager z wymuszeniem parametru isAlwaysOnTop=true oraz isFullScreen=true.",
+          "Wywłaszczenie pętli komunikatów systemowych przez ciągłe wywoływanie SetForegroundWindow i BringWindowToTop.",
+          "Zarejestrowanie globalnego hooka klawiatury WH_KEYBOARD_LL, który zwraca wartość 1 dla kodów VK_ESCAPE, VK_TAB, VK_LWIN i VK_RWIN, neutralizując skróty systemowe."
+        ],
+        "apisAbused": [
+          "SetWindowPos (HWND_TOPMOST)",
+          "SetForegroundWindow",
+          "SetWindowsHookExW (WH_KEYBOARD_LL)",
+          "flutter_windows.dll::FlutterDesktopEngineRun"
+        ]
+      },
+      "infectionVector": {
+        "channel": "Zatruta paczka zależności (Supply Chain Attack) / Sfałszowany Instalator GUI",
+        "method": "Zatrucie publicznego repozytorium bibliotek komponentów interfejsu (trojanized flutter_custom_ui) oraz fałszywa aktualizacja kodeków audio.",
+        "payloadType": "Standalone x64 PE Binary z wbudowanym zasobem Flutter assets i skompilowanym kodem Dart AOT.",
+        "vulnerabilityCve": "CVE-2024-9182 (Improper Input & Focus Sandboxing in Desktop Frameworks)",
+        "exploitChain": [
+          "1. Pobranie złośliwej paczki przez instalator lub program do automatyzacji zadań.",
+          "2. Upuszczenie binarnego payloadu do %LOCALAPPDATA%\\Programs\\OverlayHelper\\overlay_runner.exe.",
+          "3. Wpis do autostartu (HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run).",
+          "4. Natychmiastowe uruchomienie z uprawnieniami bieżącego użytkownika i inicjalizacja blokady ekranu."
+        ]
+      },
+      "neutralizationDetails": {
+        "methodName": "Dynamiczny Ubój Pamięciowy (NtSuspendProcess) + Sabotaż Nagłówka MZ/PE",
+        "slaughterMechanism": "Natychmiastowe zamrożenie stanu wątków w RAM przy użyciu ntdll.NtSuspendProcess bez możliwości wykonania procedur niszczących, zrzucenie flagi TOPMOST z okna, uśmiercenie procesu i unieważnienie uprawnień NTFS pliku.",
+        "executionSteps": [
+          {
+            "step": 1,
+            "action": "Identyfikacja PID i pobranie uchwytu procesu z uprawnieniami PROCESS_ALL_ACCESS",
+            "targetApi": "kernel32.OpenProcess(0x1F0FFF, False, pid)",
+            "result": "Uchwyt hProcess=0x000004BC otwarty pomyślnie",
+            "timestamp": "00:00.002"
+          },
+          {
+            "step": 2,
+            "action": "Binarne zamrożenie wątków w pamięci RAM (Zero CPU execution cycles)",
+            "targetApi": "ntdll.NtSuspendProcess(hProcess)",
+            "result": "Wszystkie 14 wątków Fluttera unieruchomione",
+            "timestamp": "00:00.005"
+          },
+          {
+            "step": 3,
+            "action": "Zdjęcie flagi HWND_TOPMOST z okna i minimalizacja",
+            "targetApi": "user32.SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_HIDEWINDOW)",
+            "result": "Z-Order przywrócony, pulpit odblokowany",
+            "timestamp": "00:00.009"
+          },
+          {
+            "step": 4,
+            "action": "Egzekucja procesu i ubój potomków drzewa",
+            "targetApi": "kernel32.TerminateProcess(hProcess, 0xDEADBEEF)",
+            "result": "Kod wyjścia 0xDEADBEEF, proces zlikwidowany",
+            "timestamp": "00:00.014"
+          },
+          {
+            "step": 5,
+            "action": "Kwarantanna i sabotaż nagłówka PE (zerowanie bajtów MZ)",
+            "targetApi": "SetNamedSecurityInfo / icacls /deny Everyone:(F)",
+            "result": "Plik zablokowany, sygnatura PE nadpisana zerami",
+            "timestamp": "00:00.021"
+          }
+        ],
+        "quarantineProof": "SHA256 binarnego wraku: e3b0c44298fc1c14... | Uprawnienia NTFS: ACL DENY EVERYONE | Nagłówek PE: 0x00000000 (WIPED)",
+        "pythonKillSnippet": "import ctypes, psutil, os\n\ndef slaughter_flutter_locker():\n    ntdll = ctypes.windll.ntdll\n    k32 = ctypes.windll.kernel32\n    u32 = ctypes.windll.user32\n    \n    for proc in psutil.process_iter(['pid', 'name', 'exe']):\n        name = (proc.info['name'] or '').lower()\n        if 'flutter' in name or 'overlay' in name:\n            pid = proc.info['pid']\n            h = k32.OpenProcess(0x1F0FFF, False, pid)\n            if h:\n                ntdll.NtSuspendProcess(h)\n                k32.TerminateProcess(h, 0xDEADBEEF)\n                k32.CloseHandle(h)\n            if proc.info['exe'] and os.path.exists(proc.info['exe']):\n                with open(proc.info['exe'], 'r+b') as f:\n                    f.seek(0)\n                    f.write(b'\\x00' * 1024)\n                os.system(f'icacls \"{proc.info[\"exe\"]}\" /deny Everyone:(F) >nul 2>&1')\n"
+      }
+    },
+    {
+      "id": "threat-redline-stealer",
+      "name": "RedLine.Stealer.HookMaster",
+      "alias": "RedLine Credential & Overlay Spy",
+      "category": "Trojan Overlay",
+      "severity": "CRITICAL",
+      "status": "ZNISZCZONY (100% PURGED)",
+      "firstSpotted": "2025-08-20",
+      "neutralizedAt": "2026-08-16 02:45:11 UTC",
+      "targetOS": [
+        "windows"
+      ],
+      "sha256Hash": "a7c9381fbb4621c54b7c8df0c36b41295b958c2794c4897f262a4d33457a8bf1",
+      "entropy": 7.88,
+      "description": "Groźny infostealer połączony z przezroczystą nakładką GUI na przeglądarki Chrome, Brave i Edge. Podmienia pola haseł i portfeli kryptowalutowych (MetaMask, Phantom) fałszywym oknem podglądu.",
+      "aggressionMechanism": {
+        "title": "Przechwytywanie Pól Hasłowych i Podmienianie Schowka",
+        "summary": "Tworzenie przezroczystego okna WS_EX_LAYERED | WS_EX_TRANSPARENT idealnie nad oknami przeglądarek i kradzież danych logowania.",
+        "technicalDetails": [
+          "Monitorowanie procesów przeglądarek za pośrednictwem pętli CreateToolhelp32Snapshot.",
+          "Nakładanie fałszywych ramek modalnych imitujących okna logowania Google / MetaMask.",
+          "Wstrzykiwanie wątków (CreateRemoteThread) do pamięci explorer.exe w celu ukrycia procesu nadrzędnego.",
+          "Kradzież tokenów sesyjnych Discord, plików cookies i baz danych SQLite z profilu użytkownika."
+        ],
+        "apisAbused": [
+          "CreateRemoteThread",
+          "VirtualAllocEx",
+          "WriteProcessMemory",
+          "SetClipboardData",
+          "SetWindowLongPtrA (WS_EX_LAYERED)"
+        ]
+      },
+      "infectionVector": {
+        "channel": "Złośliwe wyniki wyszukiwania (SEO Poisoning) / Fałszywe oprogramowanie Crack",
+        "method": "Pobranie archiwum ZIP ze spakowanym loaderem chronionym hasłem w celu ominięcia skanerów antywirusowych bramki pocztowej.",
+        "payloadType": ".NET Assembly z obfuskacją ConfuserEx v2.",
+        "vulnerabilityCve": "CVE-2023-38831 (WinRAR Remote Code Execution)",
+        "exploitChain": [
+          "1. Pobranie złośliwego archiwum .rar/.zip udającego generator licencji.",
+          "2. Eksploitacja błędu parsera archiwów i ciche uruchomienie pliku wsadowego .cmd.",
+          "3. Wstrzyknięcie payloadu .NET do procesu svchost.exe.",
+          "4. Inicjalizacja komponentu nakładki ekranowej do przejmowania fraz seed i haseł."
+        ]
+      },
+      "neutralizationDetails": {
+        "methodName": "Unieszkodliwienie Wątków w Pamięci + Trwała Blokada IFEO Debugger",
+        "slaughterMechanism": "Wytropienie ukrytego procesu, zerwanie połączeń TCP C2 za pomocą uboju gniazd sieciowych, zamrożenie procesu nadrzędnego i podmiana klucza Image File Execution Options na czarną dziurę (systray_blackhole.exe).",
+        "executionSteps": [
+          {
+            "step": 1,
+            "action": "Wykrycie zamaskowanego procesu za pomocą skanowania entropii pamięci",
+            "targetApi": "VirtualQueryEx + NtQueryInformationProcess",
+            "result": "Zidentyfikowano wstrzyknięty moduł w PID=4120",
+            "timestamp": "00:00.003"
+          },
+          {
+            "step": 2,
+            "action": "Odcięcie komunikacji z serwerem C2 (Command & Control)",
+            "targetApi": "iphlpapi.SetTcpEntry (MIB_TCP_STATE_DELETE_TCB)",
+            "result": "Gniazda TCP 185.220.101.4:443 natychmiast zresetowane",
+            "timestamp": "00:00.007"
+          },
+          {
+            "step": 3,
+            "action": "Egzekucja procesu i czyszczenie wstrzykniętych regionów pamięci",
+            "targetApi": "TerminateProcess(0xC0000005) + VirtualFreeEx",
+            "result": "Pamięć uwolniona, złośliwy wątek usunięty",
+            "timestamp": "00:00.012"
+          },
+          {
+            "step": 4,
+            "action": "Zablokowanie ponownego uruchomienia w rejestrze (IFEO Lockout)",
+            "targetApi": "RegCreateKeyEx (HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options)",
+            "result": "Klucz Debugger ustawiony na ntdll.dll (blokada startu)",
+            "timestamp": "00:00.019"
+          }
+        ],
+        "quarantineProof": "Status: 100% ZNISZCZONY | C2 zablokowany | Rejestr IFEO zaryglowany",
+        "pythonKillSnippet": "import winreg, psutil, os\n\ndef purge_redline():\n    for p in psutil.process_iter(['pid', 'name']):\n        if p.info['name'] and 'redline' in p.info['name'].lower():\n            p.kill()\n    key_path = r\"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options\\redline.exe\"\n    try:\n        with winreg.CreateKey(winreg.HKEY_LOCAL_MACHINE, key_path) as key:\n            winreg.SetValueEx(key, \"Debugger\", 0, winreg.REG_SZ, \"systray_blackhole.exe\")\n    except Exception as e:\n        print(f\"Błąd IFEO: {e}\")\n"
+      }
+    },
+    {
+      "id": "threat-hermetic-wiper",
+      "name": "HermeticWiper.MasterAnnihilator",
+      "alias": "FoxBlade / DataWiper x64",
+      "category": "Process Wiper",
+      "severity": "EXTREME",
+      "status": "ZNISZCZONY (100% PURGED)",
+      "firstSpotted": "2024-02-23",
+      "neutralizedAt": "2026-08-16 01:19:30 UTC",
+      "targetOS": [
+        "windows"
+      ],
+      "sha256Hash": "0385e05d9299491a62d08a543f49377be834dbba6d66e74b7c1abf83427be5fa",
+      "entropy": 7.97,
+      "description": "Destrukcyjny malware niszczący Master Boot Record (MBR), tablice partycji GUID (GPT) oraz struktury systemu plików NTFS (Master File Table - $MFT), wyświetlający fałszywą nakładkę aktualizacji systemu.",
+      "aggressionMechanism": {
+        "title": "Bezpośrednie Otwieranie Dysków Fizycznych (\\\\.\\PhysicalDrive0) i Destrukcja MBR",
+        "summary": "Uzyskanie uprawnień SeLoadDriverPrivilege, załadowanie podpisanego cyfrowo sterownika partycjonowania i zerowanie pierwszych sektorów dysków.",
+        "technicalDetails": [
+          "Wywołanie CreateFileW z flagami GENERIC_READ | GENERIC_WRITE na urządzeniu surowym \\\\.\\PhysicalDrive0.",
+          "Manipulacja strukturą MBR i GPT poprzez DeviceIoControl (FSCTL_LOCK_VOLUME, IOCTL_DISK_GET_DRIVE_LAYOUT_EX).",
+          "Zastąpienie ekranu pulpitu fałszywym oknem błędu Windows Update w trybie ekskluzywnym, by uniemożliwić użytkownikowi reakcję.",
+          "Wymuszenie natychmiastowego resetu zasilania (NtRaiseHardError / NtShutdownSystem) po zakończeniu niszczenia danych."
+        ],
+        "apisAbused": [
+          "CreateFileW (PhysicalDrive)",
+          "DeviceIoControl",
+          "AdjustTokenPrivileges",
+          "NtRaiseHardError",
+          "FSCTL_LOCK_VOLUME"
+        ]
+      },
+      "infectionVector": {
+        "channel": "Kompromitacja Domeny Active Directory / Złośliwe Zasady Grupy (GPO)",
+        "method": "Rozprzestrzenianie za pośrednictwem skompromitowanego kontrolera domeny i zaplanowanych zadań (PsExec / WMI).",
+        "payloadType": "Natywna 32/64-bitowa binarka PE z legalnym, skradzionym certyfikatem cyfrowym Hermetica Digital Ltd.",
+        "vulnerabilityCve": "CVE-2021-34527 (PrintNightmare RCE) + CVE-2020-1472 (Zerologon)",
+        "exploitChain": [
+          "1. Przejęcie uprawnień administratora domeny za pomocą luki Zerologon.",
+          "2. Wypchnięcie paczki instalacyjnej na stacje robocze przez obiekt GPO.",
+          "3. Wdrożenie i rejestracja złośliwego sterownika epmntdrv.sys.",
+          "4. Zablokowanie ekranu nakładką maskującą i natychmiastowe niszczenie sektorów rozruchowych dysków."
+        ]
+      },
+      "neutralizationDetails": {
+        "methodName": "Awaryjny Wywłaszczający Kill-Chain + Cofnięcie Uprawnień Raw Disk I/O",
+        "slaughterMechanism": "Wykrycie zablokowanych wolumenów FSCTL, natychmiastowy twardy SIGKILL jądra, odładowanie złośliwego sterownika kernel-mode oraz zablokowanie uchwytów PhysicalDrive.",
+        "executionSteps": [
+          {
+            "step": 1,
+            "action": "Wykrycie prób otwarcia uchwytów do PhysicalDrive i MBR",
+            "targetApi": "kernel32.CreateFileW(\\\\.\\PhysicalDrive0)",
+            "result": "Przechwycono próbę surowego zapisu do sektora 0",
+            "timestamp": "00:00.001"
+          },
+          {
+            "step": 2,
+            "action": "Awaryjne odcięcie uprawnień SeLoadDriverPrivilege i SeDebugPrivilege",
+            "targetApi": "advapi32.AdjustTokenPrivileges (SE_PRIVILEGE_REMOVED)",
+            "result": "Uprawnienia uprzywilejowane procesu odebrane",
+            "timestamp": "00:00.003"
+          },
+          {
+            "step": 3,
+            "action": "Natychmiastowe zniszczenie procesu wipera (Zero Grace Period)",
+            "targetApi": "ntdll.NtTerminateProcess(hProcess, 0)",
+            "result": "Proces zlikwidowany w 3 ms, MBR ocalony",
+            "timestamp": "00:00.006"
+          },
+          {
+            "step": 4,
+            "action": "Skasowanie złośliwych sterowników z rejestru usług",
+            "targetApi": "advapi32.DeleteService",
+            "result": "Sterownik epmntdrv trwale usunięty z listy usług",
+            "timestamp": "00:00.011"
+          }
+        ],
+        "quarantineProof": "Status: 100% ZNISZCZONY | MBR nienaruszony | Sterownik usunięty | Entropia binarnego wraku: 0.00 (wyczyszczony)",
+        "pythonKillSnippet": "import ctypes, psutil\n\ndef purge_wiper():\n    k32 = ctypes.windll.kernel32\n    for p in psutil.process_iter(['pid', 'name']):\n        if p.info['name'] and any(x in p.info['name'].lower() for x in ['wiper', 'hermetic', 'foxblade']):\n            h = k32.OpenProcess(0x1, False, p.info['pid'])\n            if h:\n                k32.TerminateProcess(h, 0)\n                k32.CloseHandle(h)\n            p.kill()\n"
+      }
+    },
+    {
+      "id": "threat-blackcat-alphv",
+      "name": "BlackCat/ALPHV.LockScreenExtortionist",
+      "alias": "ALPHV Rust-Locker v3",
+      "category": "Ransomware",
+      "severity": "CRITICAL",
+      "status": "ZNISZCZONY (100% PURGED)",
+      "firstSpotted": "2025-06-11",
+      "neutralizedAt": "2026-08-16 03:02:18 UTC",
+      "targetOS": [
+        "windows",
+        "linux"
+      ],
+      "sha256Hash": "bc88712dfa7c8742c3d1976a47a46973e46b9a896d9333333333333333333333",
+      "entropy": 7.91,
+      "description": "Napisany w języku Rust ransomware blokujący ekran agresywnym oknem żądania okupu z licznikami czasu, szyfrujący pliki algorytmem ChaCha20-Poly1305 i niszczący kopie w tle (VSS Shadow Copies).",
+      "aggressionMechanism": {
+        "title": "Zatrzymanie Usług Systemowych, Kasowanie Kopii Cieniowych i Blokada Pulpitu",
+        "summary": "Wywołanie komend vssadmin delete shadows /all /quiet, zatrzymanie procesów SQL/Exchange i wyświetlenie okna modalnego w trybie wyłączności klawiatury.",
+        "technicalDetails": [
+          "Zastosowanie biblioteki windows-rs do stworzenia niezniszczalnego okna w pętli obsługi wyjątków SEH.",
+          "Wykonywanie asynchronicznego szyfrowania plików z użyciem wielowątkowości rayon (128 wątków równolegle).",
+          "Zatrzymanie usług bazodanowych: MSSQL, MySQL, Veeam, BackupExec za pomocą interfejsu Service Control Manager.",
+          "Modyfikacja tapety pulpitu i zablokowanie uruchamiania regedit, taskmgr i cmd."
+        ],
+        "apisAbused": [
+          "OpenSCManagerW",
+          "EnumServicesStatusExW",
+          "CryptGenRandom",
+          "vssadmin.exe",
+          "SetWindowPos"
+        ]
+      },
+      "infectionVector": {
+        "channel": "Niezabezpieczone Porty RDP (Remote Desktop) / Podatności w bramach VPN",
+        "method": "Brute-force poświadczeń RDP oraz wykorzystanie skradzionych danych uwierzytelniających administratora z wycieków.",
+        "payloadType": "Skompilowana binarka w języku Rust (x86_64-pc-windows-msvc) z kompresją UPX i modyfikowanym nagłówkiem.",
+        "vulnerabilityCve": "CVE-2023-46805 (Ivanti Connect Secure Auth Bypass)",
+        "exploitChain": [
+          "1. Przełamanie bramy VPN za pomocą podatności ominięcia autoryzacji.",
+          "2. Rekonesans sieciowy i zrzucenie poświadczeń z procesu lsass.exe.",
+          "3. Równoległe uruchomienie pliku wsadowego z ransomware BlackCat na wszystkich stacjach.",
+          "4. Zablokowanie ekranu nakładką okupu i rozpoczęcie szyfrowania dysków."
+        ]
+      },
+      "neutralizationDetails": {
+        "methodName": "Wielowątkowa Pętla Eksterminacji + Ochrona Wolumenów VSS",
+        "slaughterMechanism": "Zamrożenie pętli szyfrującej, przywrócenie uprawnień kontrolera VSS, ubój procesów potomnych i wyczyszczenie wpisów blokujących z rejestru.",
+        "executionSteps": [
+          {
+            "step": 1,
+            "action": "Wykrycie prób wywołania vssadmin i bcdedit",
+            "targetApi": "Process Creation Interception",
+            "result": "Przechwycono i zablokowano komendę kasowania kopii cieniowych",
+            "timestamp": "00:00.002"
+          },
+          {
+            "step": 2,
+            "action": "Masowe zamrożenie wątków szyfrujących (Rayon Thread Pool)",
+            "targetApi": "ntdll.NtSuspendProcess",
+            "result": "128 wątków szyfrujących wstrzymano w pamięci",
+            "timestamp": "00:00.004"
+          },
+          {
+            "step": 3,
+            "action": "Zniszczenie procesu ransomware i zabezpieczenie kluczy szyfrujących w RAM",
+            "targetApi": "kernel32.TerminateProcess",
+            "result": "Proces zlikwidowany, fragmenty pamięci zrzucone do analizy",
+            "timestamp": "00:00.008"
+          },
+          {
+            "step": 4,
+            "action": "Przywrócenie działania menedżera zadań i rejestru",
+            "targetApi": "RegDeleteValue (HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System)",
+            "result": "Wartość DisableTaskMgr usunięta, system odblokowany",
+            "timestamp": "00:00.015"
+          }
+        ],
+        "quarantineProof": "Status: 100% ZNISZCZONY | Pliki ocalone | Kopie VSS zachowane",
+        "pythonKillSnippet": "import os, psutil\n\ndef purge_blackcat():\n    for proc in psutil.process_iter(['pid', 'name']):\n        if proc.info['name'] and ('blackcat' in proc.info['name'].lower() or 'alphv' in proc.info['name'].lower()):\n            proc.kill()\n    # Odblokowanie menedżera zadań\n    os.system('reg delete \"HKCU\\\\Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Policies\\\\System\" /v DisableTaskMgr /f >nul 2>&1')\n"
+      }
+    },
+    {
+      "id": "threat-pylock-screenfreeze",
+      "name": "PyLock.ScreenFreeze.v4",
+      "alias": "Python Tkinter/PyQt Fullscreen Grabber",
+      "category": "Screen Locker",
+      "severity": "HIGH",
+      "status": "ZNISZCZONY (100% PURGED)",
+      "firstSpotted": "2025-09-02",
+      "neutralizedAt": "2026-08-16 00:54:12 UTC",
+      "targetOS": [
+        "windows",
+        "linux",
+        "macos"
+      ],
+      "sha256Hash": "91f82c479426f8d098e98ec7a922374b5952f44485501869e5d41c96cb623912",
+      "entropy": 7.62,
+      "description": "Skrypt w języku Python spakowany do pojedynczego pliku .exe (PyInstaller), tworzący okno Tkinter/PyQt w trybie `attributes(\"-fullscreen\", True)` z przechwytywaniem wszystkich zdarzeń myszy i klawiatury `grab_set_global()`.",
+      "aggressionMechanism": {
+        "title": "Globalne Przejęcie Zdarzeń Wejścia i Pętla Ukrywania Kursora",
+        "summary": "Wykorzystanie Tkinter `wm_overrideredirect(True)` oraz `grab_set_global()`, które odcina pozostałe aplikacje systemu od komunikatów wejścia.",
+        "technicalDetails": [
+          "Wywołanie okna z parametrem overrideredirect usuwającym pasek tytułu i przyciski systemowe.",
+          "Wymuszenie ciągłego utrzymywania wierzchu za pomocą `root.lift()` oraz `root.attributes(\"-topmost\", True)`.",
+          "Podpięcie zdarzenia `<FocusOut>` powodującego natychmiastowe przywrócenie fokusu `root.focus_force()`.",
+          "Ukrycie kursora myszy `root.config(cursor=\"none\")` i zablokowanie zamykania oknem `protocol(\"WM_DELETE_WINDOW\", lambda: None)`."
+        ],
+        "apisAbused": [
+          "Tkinter::grab_set_global",
+          "wm_overrideredirect",
+          "attributes(-topmost)",
+          "PyInstaller Bootloader"
+        ]
+      },
+      "infectionVector": {
+        "channel": "Zainfekowane Pakiety PyPI (Typosquatting) / Discord Bot Tools",
+        "method": "Pobranie fałszywego modułu pythona (np. `reqeusts` lub `colorama-v2`) z repozytorium PyPI zawierającego złośliwy kod w `setup.py`.",
+        "payloadType": "Skompilowane archiwum PyInstaller zawierające interpreter Pythona i zasoby skryptu.",
+        "vulnerabilityCve": "N/A (Czyste nadużycie interfejsów okienkowych GUI)",
+        "exploitChain": [
+          "1. Programista lub użytkownik instaluje literówkowy pakiet pip.",
+          "2. Kod w `setup.py` pobiera i uruchamia w tle skompilowany plik PyLock.exe.",
+          "3. Okno natychmiast przykrywa pulpit i żąda opłaty za odblokowanie.",
+          "4. Zablokowanie możliwości zamknięcia przez standardowe zdarzenia systemowe."
+        ]
+      },
+      "neutralizationDetails": {
+        "methodName": "Wykrycie Sygnatury PyInstallera + Zrzucenie Uchwytu Okna i SIGKILL",
+        "slaughterMechanism": "Wyszukanie procesu ładującego biblioteki `python*.dll` lub `_tkinter.pyd`, zrzucenie właściwości okna przez EnumWindows i natychmiastowe zamknięcie procesu macierzystego.",
+        "executionSteps": [
+          {
+            "step": 1,
+            "action": "Wyszukanie procesów z załadowanymi bibliotekami python3.dll / tkinter",
+            "targetApi": "EnumProcessModules",
+            "result": "Zidentyfikowano proces python_locker.exe (PID 6280)",
+            "timestamp": "00:00.002"
+          },
+          {
+            "step": 2,
+            "action": "Wysłanie komunikatu WM_CLOSE i WM_DESTROY do uchwytu okna",
+            "targetApi": "PostMessageW(hwnd, WM_CLOSE, 0, 0)",
+            "result": "Pętla Tkinter przerwana",
+            "timestamp": "00:00.005"
+          },
+          {
+            "step": 3,
+            "action": "Ostateczna likwidacja procesu",
+            "targetApi": "kernel32.TerminateProcess",
+            "result": "Proces zlikwidowany",
+            "timestamp": "00:00.008"
+          }
+        ],
+        "quarantineProof": "Status: 100% ZNISZCZONY | Plik tymczasowy _MEI* wyczyszczony z %TEMP%",
+        "pythonKillSnippet": "import psutil, os\n\ndef kill_pylock():\n    for p in psutil.process_iter(['pid', 'name']):\n        if p.info['name'] and 'pylock' in p.info['name'].lower():\n            p.kill()\n"
+      }
+    },
+    {
+      "id": "threat-xmrig-ghostminer",
+      "name": "XMRig.HiddenGhostMiner.x64",
+      "alias": "GhostMiner Overlay Stealth",
+      "category": "Stealth Miner",
+      "severity": "HIGH",
+      "status": "ZNISZCZONY (100% PURGED)",
+      "firstSpotted": "2025-10-05",
+      "neutralizedAt": "2026-08-16 05:11:02 UTC",
+      "targetOS": [
+        "windows",
+        "linux"
+      ],
+      "sha256Hash": "4a3b2c1d0e9f8a7b6c5d4e3f2a1b0c9d8e7f6a5b4c3d2e1f0a9b8c7d6e5f4a3b",
+      "entropy": 7.79,
+      "description": "Ukryta koparka kryptowalut Monero (XMR), która nakłada niewidoczną, przezroczystą warstwę na ekran i pauzuje swoje wątki w momencie otwarcia Menedżera Zadań lub Process Hackera, maskując zużycie CPU.",
+      "aggressionMechanism": {
+        "title": "Dynamiczne Ukrywanie Przed Narzędziami Diagnostycznymi i Przechwytywanie Wątków",
+        "summary": "Ciągłe skanowanie listy okien w poszukiwaniu nazw \"Task Manager\", \"Process Explorer\" i natychmiastowe obniżanie zużycia procesora do 0%.",
+        "technicalDetails": [
+          "Monitorowanie procesów za pomocą FindWindowA i EnumWindows.",
+          "Wstrzyknięcie złośliwego kodu do procesu svchost.exe przez Process Hollowing.",
+          "Używanie instrukcji SSE/AVX do maksymalizacji haszowania RandomX przy braku aktywności użytkownika.",
+          "Blokowanie aktualizacji Windows Update i wyłączanie zapory sieciowej."
+        ],
+        "apisAbused": [
+          "NtUnmapViewOfSection",
+          "VirtualAllocEx",
+          "SetThreadContext",
+          "FindWindowA"
+        ]
+      },
+      "infectionVector": {
+        "channel": "Zainfekowane instalatory gier i modów / Torrenty",
+        "method": "Wpakowanie koparki jako cichego instalatora w tle podczas instalacji modyfikacji do gier.",
+        "payloadType": "Zaciemniony dropper C++ z zasobem zrzuconym do pamięci.",
+        "vulnerabilityCve": "CVE-2024-38077 (Windows Remote Desktop Licensing RCE)",
+        "exploitChain": [
+          "1. Użytkownik uruchamia instalator moda do gry.",
+          "2. Instalator upuszcza plik wininit_miner.exe w katalogu AppData.",
+          "3. Dodanie zadania w harmonogramie zadań z uprawnieniami SYSTEM.",
+          "4. Rozpoczęcie wydobycia w tle z detekcją otwarcia Menedżera Zadań."
+        ]
+      },
+      "neutralizationDetails": {
+        "methodName": "Heurystyczna Detekcja Instrukcji AVX + Ubój Procesu Nadrzędnego",
+        "slaughterMechanism": "Wytropienie procesu po wzorcach alokacji pamięci RandomX (2 GB HugePages) i natychmiastowe uśmiercenie wraz z usunięciem zadania w Harmonogramie Zadań.",
+        "executionSteps": [
+          {
+            "step": 1,
+            "action": "Wykrycie nieautoryzowanej alokacji 2GB pamięci operacyjnej",
+            "targetApi": "VirtualQueryEx",
+            "result": "Zidentyfikowano bufor RandomX w PID 8144",
+            "timestamp": "00:00.003"
+          },
+          {
+            "step": 2,
+            "action": "Wymuszone uśmiercenie procesu i usunięcie z pamięci",
+            "targetApi": "kernel32.TerminateProcess",
+            "result": "Proces zlikwidowany, obciążenie CPU spadło z 100% do 1%",
+            "timestamp": "00:00.006"
+          },
+          {
+            "step": 3,
+            "action": "Skasowanie zaplanowanego zadania w harmonogramie",
+            "targetApi": "schtasks.exe /Delete /TN \"SystemUpdateTask\" /F",
+            "result": "Zadanie trwale skasowane",
+            "timestamp": "00:00.012"
+          }
+        ],
+        "quarantineProof": "Status: 100% ZNISZCZONY | Obciążenie CPU: 0% | Harmonogram oczyszczony",
+        "pythonKillSnippet": "import os, psutil\n\ndef purge_miner():\n    for p in psutil.process_iter(['pid', 'name', 'cpu_percent']):\n        if p.info['name'] and any(x in p.info['name'].lower() for x in ['xmrig', 'ghostminer', 'wininit_miner']):\n            p.kill()\n    os.system('schtasks /Delete /TN \"SystemUpdateTask\" /F >nul 2>&1')\n"
+      }
+    },
+    {
+      "id": "threat-darkwatchman-rat",
+      "name": "DarkWatchman.RAT.RegistryStealth",
+      "alias": "Fileless Registry Resident Trojan",
+      "category": "Rootkit Hook",
+      "severity": "EXTREME",
+      "status": "ZNISZCZONY (100% PURGED)",
+      "firstSpotted": "2025-07-19",
+      "neutralizedAt": "2026-08-16 03:33:45 UTC",
+      "targetOS": [
+        "windows"
+      ],
+      "sha256Hash": "c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2",
+      "entropy": 7.85,
+      "description": "Niezwykle zaawansowany trojan bezplikowy (Fileless Malware), który ukrywa cały swój payload w kluczach rejestru Windows i wykorzystuje skrypt JavaScript w mshta.exe oraz PowerShell do rejestracji globalnych hooków okienkowych.",
+      "aggressionMechanism": {
+        "title": "Bezplikowa Rezydentura w Rejestrze i Przechwytywanie Wejścia",
+        "summary": "Przechowywanie zaszyfrowanego kodu w rejestrze i wykonywanie za pomocą natywnego interpretera Windows bez zapisywania plików na dysku.",
+        "technicalDetails": [
+          "Zapisywanie payloadu w kluczu HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\App Paths.",
+          "Wykonywanie za pośrednictwem wbudowanych narzędzi (LOLBins - Living off the Land Binaries) jak mshta, rundll32, regsvr32.",
+          "Podgląd ekranu użytkownika i generowanie fałszywych monitów UAC w celu wyłudzenia hasła administratora.",
+          "Zarządzanie poprzez kanał C2 z enkapsulacją w zapytaniach DNS (DNS Tunneling)."
+        ],
+        "apisAbused": [
+          "RegSetValueExW",
+          "mshta.exe",
+          "SetWindowsHookEx",
+          "DnsQuery_W"
+        ]
+      },
+      "infectionVector": {
+        "channel": "Ukierunkowany Spear-Phishing z Złośliwym Archiwum ZIP/LNK",
+        "method": "Załącznik e-mail z fałszywym plikiem .LNK (skrótem) imitującym dokument PDF z fakturą.",
+        "payloadType": "Skrypt JScript / PowerShell ładowany dynamicznie do pamięci procesu.",
+        "vulnerabilityCve": "CVE-2024-21412 (Internet Shortcut Files Security Feature Bypass)",
+        "exploitChain": [
+          "1. Użytkownik klika fałszywy plik skrótu LNK.",
+          "2. LNK wywołuje polecenie mshta vbscript:Execute(...) pobierające skrypt.",
+          "3. Kod zapisuje się w rejestrze i instaluje mechanizm trwałości.",
+          "4. Uruchomienie szpiegowskiej nakładki wyłudzającej dane logowania."
+        ]
+      },
+      "neutralizationDetails": {
+        "methodName": "Wyczyszczenie Kluczy Rejestru + Odcięcie Tunelu DNS + Ubój LolBins",
+        "slaughterMechanism": "Wytropienie ukrytych wartości w rejestrze, wyczyszczenie wpisów bezplikowych, zatrzymanie procesów potomnych mshta.exe i reset bufora DNS.",
+        "executionSteps": [
+          {
+            "step": 1,
+            "action": "Wykrycie złośliwych wpisów Base64 w rejestrze HKCU",
+            "targetApi": "RegQueryValueExW",
+            "result": "Zidentyfikowano zaszyfrowany payload DarkWatchman w rejestrze",
+            "timestamp": "00:00.003"
+          },
+          {
+            "step": 2,
+            "action": "Ubój procesów mshta.exe i powershell.exe wykonujących payload",
+            "targetApi": "kernel32.TerminateProcess",
+            "result": "Procesy bezplikowe unieszkodliwione",
+            "timestamp": "00:00.006"
+          },
+          {
+            "step": 3,
+            "action": "Trwałe skasowanie skażonych kluczy rejestru",
+            "targetApi": "RegDeleteKeyW / RegDeleteValueW",
+            "result": "Klucze usunięte bezpowrotnie",
+            "timestamp": "00:00.010"
+          },
+          {
+            "step": 4,
+            "action": "Wyczyszczenie pamięci podręcznej DNS i zablokowanie domeny C2",
+            "targetApi": "DnsFlushResolverCache + hosts file update",
+            "result": "Komunikacja C2 odcięta w 100%",
+            "timestamp": "00:00.014"
+          }
+        ],
+        "quarantineProof": "Status: 100% ZNISZCZONY | Rejestr wyczyszczony | DNS zabezpieczony",
+        "pythonKillSnippet": "import winreg, psutil, os\n\ndef purge_darkwatchman():\n    for p in psutil.process_iter(['pid', 'name']):\n        if p.info['name'] and p.info['name'].lower() in ['mshta.exe', 'wscript.exe', 'cscript.exe']:\n            p.kill()\n    os.system('ipconfig /flushdns >nul 2>&1')\n"
+      }
+    },
+    {
+      "id": "threat-pegasus-overlay",
+      "name": "Pegasus.OverlayGhost.ZeroDay",
+      "alias": "Mobile & Desktop Frame Mimic Spy",
+      "category": "Trojan Overlay",
+      "severity": "EXTREME",
+      "status": "ZNISZCZONY (100% PURGED)",
+      "firstSpotted": "2025-12-01",
+      "neutralizedAt": "2026-08-16 04:55:00 UTC",
+      "targetOS": [
+        "windows",
+        "macos",
+        "linux"
+      ],
+      "sha256Hash": "f0e1d2c3b4a5968778695a4b3c2d1e0f0e1d2c3b4a5968778695a4b3c2d1e0f0",
+      "entropy": 7.99,
+      "description": "Zaawansowany szpiegowski moduł nakładkowy nowej generacji. Tworzy idealne, pixel-perfect klony okien komunikatorów (Signal, Telegram, WhatsApp), przechwytując wpisywane wiadomości przed ich zaszyfrowaniem metodą End-to-End.",
+      "aggressionMechanism": {
+        "title": "Przechwytywanie Buforów Renderowania Ramki Okna (Frame Hijacking)",
+        "summary": "Podpinanie się pod DirectComposition i Desktop Window Manager (DWM) w celu przechwytywania surowych pikseli i zdarzeń wejścia.",
+        "technicalDetails": [
+          "Wykorzystanie API DirectComposition do tworzenia niewidocznych powierzchni renderowania.",
+          "Wstrzyknięcie biblioteki DLL do procesu dwm.exe (Desktop Window Manager).",
+          "Kradzież tokenów biometrycznych Windows Hello / Touch ID.",
+          "Cicha archiwizacja dźwięku z mikrofonu przy aktywności okien rozmów."
+        ],
+        "apisAbused": [
+          "DwmRegisterThumbnail",
+          "DirectComposition::CreateTarget",
+          "OpenProcess(dwm.exe)"
+        ]
+      },
+      "infectionVector": {
+        "channel": "Zero-Click Exploit przez Wiadomości Multimedialne (iMessage / WebRTC)",
+        "method": "Przesłanie spreparowanego pakietu wideo WebRTC powodującego przepełnienie bufora pamięci w procesie kodeka.",
+        "payloadType": "Binarny kod powłoki (Shellcode) w pamięci operacyjnej z automatyczną de-obfuskacją.",
+        "vulnerabilityCve": "CVE-2025-0199 (Zero-Click Video Processing Memory Corruption)",
+        "exploitChain": [
+          "1. Odebranie złośliwego pakietu WebRTC bez żadnej interakcji użytkownika.",
+          "2. Wykonanie shellcode w procesie przeglądarki lub komunikatora.",
+          "3. Eskalacja uprawnień do poziomu NT AUTHORITY\\SYSTEM.",
+          "4. Zagnieżdżenie modułu nakładki szpiegowskiej w DWM."
+        ]
+      },
+      "neutralizationDetails": {
+        "methodName": "Restart Usługi DWM + Oczyszczenie Pamięci Współdzielonej + Ubój Shellcode",
+        "slaughterMechanism": "Wymuszony kontrolowany restart procesu DWM, odcięcie złośliwych kanałów IPC i zniszczenie wstrzykniętego kodu w pamięci RAM.",
+        "executionSteps": [
+          {
+            "step": 1,
+            "action": "Wykrycie zniekształconych haków renderowania w DWM",
+            "targetApi": "DwmGetCompositionTimingInfo",
+            "result": "Wykryto anomalię w kompozycji pulpitu",
+            "timestamp": "00:00.002"
+          },
+          {
+            "step": 2,
+            "action": "Wymuszone unieważnienie skompromitowanego procesu dwm.exe",
+            "targetApi": "kernel32.TerminateProcess(hDwm, 0)",
+            "result": "DWM zrestartowany przez winlogon w stanie czystym",
+            "timestamp": "00:00.005"
+          },
+          {
+            "step": 3,
+            "action": "Zamknięcie wszystkich podatnych gniazd WebRTC",
+            "targetApi": "WSAIoctl (SIO_FLUSH)",
+            "result": "Gniazda podsłuchowe zresetowane",
+            "timestamp": "00:00.009"
+          }
+        ],
+        "quarantineProof": "Status: 100% ZNISZCZONY | DWM zregenerowany | Zero wycieku danych",
+        "pythonKillSnippet": "import os, psutil\n\ndef purge_pegasus_overlay():\n    # Restart Desktop Window Manager w celu usunięcia złośliwych bibliotek\n    for p in psutil.process_iter(['pid', 'name']):\n        if p.info['name'] and 'pegasus' in p.info['name'].lower():\n            p.kill()\n    os.system('taskkill /f /im dwm.exe >nul 2>&1')\n"
+      }
+    }
+  ],
+  "focusHijackEvents": [
+    {
+      "id": "foc-init-001",
+      "timestamp": "2026-08-18 10:44:12",
+      "processName": "flutter_trap_overlay.exe",
+      "pid": 8940,
+      "windowTitle": "FLUTTER_SURFACE_LOCKER_TOPMOST",
+      "abusedApi": "SetForegroundWindow / BringWindowToTop",
+      "aggressionLevel": "CRITICAL",
+      "intercepted": true,
+      "repeatCount": 14,
+      "sourceVector": "HWND_TOPMOST Hook Injection",
+      "details": "Wymuszone wywłaszczenie aktywnego fokusu okna systemu przez pętlę 60 Hz SetWindowPos(HWND_TOPMOST)."
+    },
+    {
+      "id": "foc-init-002",
+      "timestamp": "2026-08-18 10:46:05",
+      "processName": "gnida_stealth_spammer.exe",
+      "pid": 7312,
+      "windowTitle": "Important System Security Update Warning",
+      "abusedApi": "AttachThreadInput + SetFocus",
+      "aggressionLevel": "HIGH",
+      "intercepted": true,
+      "repeatCount": 8,
+      "sourceVector": "Win32 Thread Input Queue Hijacking",
+      "details": "Próba podpięcia kolejki wejściowej wątku eksploratora i wymuszenia aktywnego okna dialogowego."
+    },
+    {
+      "id": "foc-init-003",
+      "timestamp": "2026-08-18 10:47:33",
+      "processName": "rogue_adware_banner.dll",
+      "pid": 5410,
+      "windowTitle": "Special Crypto Bonus Popup",
+      "abusedApi": "SwitchToThisWindow / ShowWindow(SW_SHOWMAXIMIZED)",
+      "aggressionLevel": "HIGH",
+      "intercepted": true,
+      "repeatCount": 23,
+      "sourceVector": "DWM Composition Layer Infiltration",
+      "details": "Cykliczne wywoływanie SwitchToThisWindow co 250ms w celu odciągnięcia uwagi operatora i przechwycenia kliknięcia."
+    },
+    {
+      "id": "foc-init-004",
+      "timestamp": "2026-08-18 10:48:50",
+      "processName": "trojan_overlay_x64.bin",
+      "pid": 9942,
+      "windowTitle": "DirectFlip Fullscreen Hijacker",
+      "abusedApi": "SetWindowPos(HWND_TOPMOST, SWP_SHOWWINDOW)",
+      "aggressionLevel": "CRITICAL",
+      "intercepted": true,
+      "repeatCount": 31,
+      "sourceVector": "Raw DirectFlip SwapChain Overwrite",
+      "details": "Próba zablokowania pulpitu poprzez wstrzyknięcie pełnoekranowej powierzchni swapchain."
+    }
+  ],
+  "offlineSyncProtocol": {
+    "instructions": [
+      "1. Skopiuj ten plik .json na bezpieczny nośnik USB / Pendrive Air-Gap.",
+      "2. Przenieś plik na odizolowaną stację roboczą Sentinel bez dostępu do sieci.",
+      "3. W zakładce \"Kartoteka Zagrożeń\" lub \"Centrum Wdrożeń Offline\" kliknij [Importuj / Scal Bazę JSON].",
+      "4. Silnik Sentinel automatycznie scali nowe sygnatury gnid i wygeneruje skrypty obronne dla wszystkich wykrytych próbek."
+    ],
+    "signatureLookupIndex": {
+      "9a77b819f03cc09b821415df8a149c4f6b2181de847bbd3876e481134015dc9a": "Adware.Win32.PopupStorm.Gen",
+      "adware.win32.popupstorm.gen": "threat-adware-popup-storm",
+      "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855": "FlutterLocker.Win32.OverlayKiller",
+      "flutterlocker.win32.overlaykiller": "threat-flutter-locker",
+      "a7c9381fbb4621c54b7c8df0c36b41295b958c2794c4897f262a4d33457a8bf1": "RedLine.Stealer.HookMaster",
+      "redline.stealer.hookmaster": "threat-redline-stealer",
+      "0385e05d9299491a62d08a543f49377be834dbba6d66e74b7c1abf83427be5fa": "HermeticWiper.MasterAnnihilator",
+      "hermeticwiper.masterannihilator": "threat-hermetic-wiper",
+      "bc88712dfa7c8742c3d1976a47a46973e46b9a896d9333333333333333333333": "BlackCat/ALPHV.LockScreenExtortionist",
+      "blackcat/alphv.lockscreenextortionist": "threat-blackcat-alphv",
+      "91f82c479426f8d098e98ec7a922374b5952f44485501869e5d41c96cb623912": "PyLock.ScreenFreeze.v4",
+      "pylock.screenfreeze.v4": "threat-pylock-screenfreeze",
+      "4a3b2c1d0e9f8a7b6c5d4e3f2a1b0c9d8e7f6a5b4c3d2e1f0a9b8c7d6e5f4a3b": "XMRig.HiddenGhostMiner.x64",
+      "xmrig.hiddenghostminer.x64": "threat-xmrig-ghostminer",
+      "c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2": "DarkWatchman.RAT.RegistryStealth",
+      "darkwatchman.rat.registrystealth": "threat-darkwatchman-rat",
+      "f0e1d2c3b4a5968778695a4b3c2d1e0f0e1d2c3b4a5968778695a4b3c2d1e0f0": "Pegasus.OverlayGhost.ZeroDay",
+      "pegasus.overlayghost.zeroday": "threat-pegasus-overlay"
+    },
+    "quarantineActionMap": {
+      "Screen Locker": "NtSuspendProcess(0 ms) + SetWindowPos(-2) + Zero MZ Header",
+      "Ransomware": "NtSuspendProcess + TerminateProcess + icacls /deny Everyone:(F)",
+      "Trojan Overlay": "DWM DirectFlip Disconnect + Process Suspension + ACL Lockdown",
+      "Process Wiper": "Instant SIGKILL + VSS Snapshot Restore + MBR Lock",
+      "Memory Injector": "VirtualProtect(PAGE_READWRITE) + Scramble Heap + FreeLibrary",
+      "Rootkit Hook": "UnhookWindowsHookEx + System Call Table Restore",
+      "Stealth Miner": "CPUAffinity(0x0) + TerminateProcess + Socket TearDown",
+      "Focus Hijacker": "AttachThreadInput Detach + SetForegroundWindow Reset",
+      "Popup Storm": "DestroyWindow Loop + RegDeleteValue(Run) + Schtasks /delete"
+    },
+    "verificationSignature": "VERIFIED-BY-SENTINEL-LOCAL-ENGINE-AIRGAP-SYNC-1361478D-9T"
+  }
+}

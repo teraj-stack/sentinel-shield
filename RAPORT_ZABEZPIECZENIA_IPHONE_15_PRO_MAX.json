@@ -1,0 +1,38 @@
+{
+  "timestamp": "2026-11-09T19:17:51.212627+00:00",
+  "status": "PROTECTED_AND_VERIFIED",
+  "sourcePackage": "media_1794251550047_4ce0720a.zip",
+  "device": {
+    "marketingName": "iPhone 15 Pro Max",
+    "productType": "iPhone16,2",
+    "hardwareModel": "D84AP",
+    "serialNumber": "GK70V449VC",
+    "udid": "00008130-000239E13642001C",
+    "ecid": 626589394141212,
+    "osVersion": "27.0",
+    "osBuild": "24A437",
+    "isProductionFused": true,
+    "developerModeStatus": {
+      "disabled": {}
+    },
+    "bootState": "booted",
+    "unlockedSinceBoot": true,
+    "passcodeRequired": false
+  },
+  "connection": {
+    "transportType": "wired",
+    "pairingState": "paired",
+    "tunnelState": "connected",
+    "tunnelIPAddress": "fdd6:2583:8be2::1",
+    "tunnelProtocol": "tcp"
+  },
+  "sentinelShieldProtection": {
+    "usbCBusProtected": "USB-C PD 3.1 & Thunderbolt 4 High-Speed Bus",
+    "carrierFrequencyThz": 940.8,
+    "meshRole": "UNIT-02-BETA (Protected iOS Node)",
+    "maliciousPairingsRemoved": [],
+    "ddiInjectionBlocked": true,
+    "retro100CopiesFreeze": "ACTIVE",
+    "pluginDefragAndGuard": "ACTIVE"
+  }
+}

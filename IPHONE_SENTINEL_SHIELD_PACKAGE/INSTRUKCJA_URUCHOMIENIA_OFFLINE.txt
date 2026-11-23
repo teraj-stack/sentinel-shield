@@ -1,0 +1,19 @@
+=============================================================================
+SENTINEL SHIELD - AUTONOMICZNY PAKIET BADAWCZY OFFLINE
+=============================================================================
+Kompletny zestaw skryptów do badań klinicznych i weryfikacji sprzętowej.
+Zgodny z WCAG 2.1 AAA - brak bodźców stroboskopowych, brak syren audio.
+
+Zawartość archiwum:
+1. 1_SENTINEL_AUTORUN_INSTANT_KILLER.bat - Natychmiastowe zdjęcie TopMost i zabicie procesów
+2. 2_SENTINEL_NATIVE_GUI_LAUNCHER.py - Interfejs Tkinter / Win32 API
+3. 3_SENTINEL_OFFLINE_AUTONOMOUS_STANDALONE.html - Samodzielna aplikacja HTML/JS
+4. 4_sentinel_device_network_gnida_paralyzer.py - Demon tła
+5. 5_SENTINEL_4_DEVICE_MESH_LAB_EXERCISE.bat - Model 4 urządzeń do badań
+6. 6_SENTINEL_RETRO_100_COPIES_ANCESTOR_FREEZE.py - Zamrażanie 100 pokoleń kopii w RAM
+7. 7_SENTINEL_ALL_PLUGINS_FREEZE_ALARM_AND_DEFRAG.py - Zabezpieczenie wtyczek i defragmentacja
+8. 8_SENTINEL_NEUTRALIZED_THREATS_AND_GNIDA_SIGNATURES.json - Baza sygnatur offline
+9. 9_ODCZYTY_CZUJNIKOW_I_PARAMETRY_PCI.json - Telemetria napięć, prądów i pól EM
+10. 10_SENTINEL_IMMUNIZER_MAX_AND_MALWARE_DEFANGER.py - Trwałe uszkodzenie malware & rygiel wejść
+11. 11_SENTINEL_NATIVE_BAT_IMMUNIZER_AND_MALWARE_DEFANGER.bat - Natywny skrypt wsadowy Windows
+12. DOKUMENTACJA_DLA_OSOB_DECYZYJNYCH_RAPORT_BEZPIECZENSTWA.md - Raport medyczno-techniczny

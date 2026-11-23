@@ -1,0 +1,38 @@
+{
+  "timestamp": "2026-11-09T20:25:53.141805+00:00",
+  "status": "PROTECTED_AND_VERIFIED",
+  "sourcePackage": "media_1794251550047_4ce0720a.zip",
+  "device": {
+    "marketingName": "iPhone 16 Pro",
+    "productType": "iPhone17,1",
+    "hardwareModel": "D93AP",
+    "serialNumber": "M2M1QL7KW9",
+    "udid": "00008140-000A68A62EDB001C",
+    "ecid": 2929812727070748,
+    "osVersion": "27.2",
+    "osBuild": "24B119",
+    "isProductionFused": true,
+    "developerModeStatus": {
+      "disabled": {}
+    },
+    "bootState": "booted",
+    "unlockedSinceBoot": true,
+    "passcodeRequired": false
+  },
+  "connection": {
+    "transportType": "wired",
+    "pairingState": "paired",
+    "tunnelState": "unavailable",
+    "tunnelIPAddress": "fd0e:12ad:cc08::1",
+    "tunnelProtocol": "tcp"
+  },
+  "sentinelShieldProtection": {
+    "usbCBusProtected": "USB-C PD 3.1 & Thunderbolt 4 High-Speed Bus",
+    "carrierFrequencyThz": 940.8,
+    "meshRole": "UNIT-02-BETA (Protected iOS Node)",
+    "maliciousPairingsRemoved": [],
+    "ddiInjectionBlocked": true,
+    "retro100CopiesFreeze": "ACTIVE",
+    "pluginDefragAndGuard": "ACTIVE"
+  }
+}

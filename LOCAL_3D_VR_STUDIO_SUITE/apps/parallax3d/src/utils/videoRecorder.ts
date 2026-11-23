@@ -1,0 +1,54 @@
+/**
+* Utility to record seamless looping WebM parallax video directly from WebGL canvas
+*/
+export async function recordCanvasLoop(canvas, durationMs = 3600, onProgress) {
+	return new Promise((resolve, reject) => {
+		try {
+			const stream = canvas.captureStream(30);
+			let mimeType = "video/webm;codecs=vp9";
+			if (!MediaRecorder.isTypeSupported(mimeType)) {
+				mimeType = "video/webm";
+			}
+			if (!MediaRecorder.isTypeSupported(mimeType)) {
+				mimeType = "";
+			}
+			const recorder = new MediaRecorder(stream, mimeType ? { mimeType } : undefined);
+			const chunks = [];
+			recorder.ondataavailable = (e) => {
+				if (e.data && e.data.size > 0) {
+					chunks.push(e.data);
+				}
+			};
+			recorder.onstop = () => {
+				const finalBlob = new Blob(chunks, { type: "video/webm" });
+				resolve(finalBlob);
+			};
+			recorder.onerror = (err) => reject(err);
+			recorder.start();
+			const startTime = performance.now();
+			const interval = setInterval(() => {
+				const elapsed = performance.now() - startTime;
+				const progress = Math.min(1, elapsed / durationMs);
+				if (onProgress) onProgress(progress);
+				if (elapsed >= durationMs) {
+					clearInterval(interval);
+					recorder.stop();
+				}
+			}, 50);
+		} catch (err) {
+			reject(err);
+		}
+	});
+}
+export function downloadBlob(blob, filename) {
+	const url = URL.createObjectURL(blob);
+	const a = document.createElement("a");
+	a.href = url;
+	a.download = filename;
+	document.body.appendChild(a);
+	a.click();
+	document.body.removeChild(a);
+	setTimeout(() => URL.revokeObjectURL(url), 1e3);
+}
+
+//# sourceMappingURL=data:application/json;base64,eyJtYXBwaW5ncyI6Ijs7O0FBSUEsT0FBTyxlQUFlLGlCQUNwQixRQUNBLGFBQXFCLE1BQ3JCLFlBQ2U7Q0FDZixPQUFPLElBQUksU0FBUyxTQUFTLFdBQVc7RUFDdEMsSUFBSTtHQUNGLE1BQU0sU0FBUyxPQUFPLGNBQWMsRUFBRTtHQUN0QyxJQUFJLFdBQVc7R0FDZixJQUFJLENBQUMsY0FBYyxnQkFBZ0IsUUFBUSxHQUFHO0lBQzVDLFdBQVc7R0FDYjtHQUNBLElBQUksQ0FBQyxjQUFjLGdCQUFnQixRQUFRLEdBQUc7SUFDNUMsV0FBVztHQUNiO0dBRUEsTUFBTSxXQUFXLElBQUksY0FBYyxRQUFRLFdBQVcsRUFBRSxTQUFTLElBQUksU0FBUztHQUM5RSxNQUFNLFNBQWlCLENBQUM7R0FFeEIsU0FBUyxtQkFBbUIsTUFBTTtJQUNoQyxJQUFJLEVBQUUsUUFBUSxFQUFFLEtBQUssT0FBTyxHQUFHO0tBQzdCLE9BQU8sS0FBSyxFQUFFLElBQUk7SUFDcEI7R0FDRjtHQUVBLFNBQVMsZUFBZTtJQUN0QixNQUFNLFlBQVksSUFBSSxLQUFLLFFBQVEsRUFBRSxNQUFNLGFBQWEsQ0FBQztJQUN6RCxRQUFRLFNBQVM7R0FDbkI7R0FFQSxTQUFTLFdBQVcsUUFBUSxPQUFPLEdBQUc7R0FFdEMsU0FBUyxNQUFNO0dBRWYsTUFBTSxZQUFZLFlBQVksSUFBSTtHQUNsQyxNQUFNLFdBQVcsa0JBQWtCO0lBQ2pDLE1BQU0sVUFBVSxZQUFZLElBQUksSUFBSTtJQUNwQyxNQUFNLFdBQVcsS0FBSyxJQUFJLEdBQUcsVUFBVSxVQUFVO0lBQ2pELElBQUksWUFBWSxXQUFXLFFBQVE7SUFDbkMsSUFBSSxXQUFXLFlBQVk7S0FDekIsY0FBYyxRQUFRO0tBQ3RCLFNBQVMsS0FBSztJQUNoQjtHQUNGLEdBQUcsRUFBRTtFQUNQLFNBQVMsS0FBSztHQUNaLE9BQU8sR0FBRztFQUNaO0NBQ0YsQ0FBQztBQUNIO0FBRUEsT0FBTyxTQUFTLGFBQWEsTUFBWSxVQUFrQjtDQUN6RCxNQUFNLE1BQU0sSUFBSSxnQkFBZ0IsSUFBSTtDQUNwQyxNQUFNLElBQUksU0FBUyxjQUFjLEdBQUc7Q0FDcEMsRUFBRSxPQUFPO0NBQ1QsRUFBRSxXQUFXO0NBQ2IsU0FBUyxLQUFLLFlBQVksQ0FBQztDQUMzQixFQUFFLE1BQU07Q0FDUixTQUFTLEtBQUssWUFBWSxDQUFDO0NBQzNCLGlCQUFpQixJQUFJLGdCQUFnQixHQUFHLEdBQUcsR0FBSTtBQUNqRCIsIm5hbWVzIjpbXSwic291cmNlcyI6WyJ2aWRlb1JlY29yZGVyLnRzIl0sInZlcnNpb24iOjMsInNvdXJjZXNDb250ZW50IjpbIi8qKlxuICogVXRpbGl0eSB0byByZWNvcmQgc2VhbWxlc3MgbG9vcGluZyBXZWJNIHBhcmFsbGF4IHZpZGVvIGRpcmVjdGx5IGZyb20gV2ViR0wgY2FudmFzXG4gKi9cblxuZXhwb3J0IGFzeW5jIGZ1bmN0aW9uIHJlY29yZENhbnZhc0xvb3AoXG4gIGNhbnZhczogSFRNTENhbnZhc0VsZW1lbnQsXG4gIGR1cmF0aW9uTXM6IG51bWJlciA9IDM2MDAsXG4gIG9uUHJvZ3Jlc3M/OiAocHJvZ3Jlc3M6IG51bWJlcikgPT4gdm9pZFxuKTogUHJvbWlzZTxCbG9iPiB7XG4gIHJldHVybiBuZXcgUHJvbWlzZSgocmVzb2x2ZSwgcmVqZWN0KSA9PiB7XG4gICAgdHJ5IHtcbiAgICAgIGNvbnN0IHN0cmVhbSA9IGNhbnZhcy5jYXB0dXJlU3RyZWFtKDMwKTtcbiAgICAgIGxldCBtaW1lVHlwZSA9ICd2aWRlby93ZWJtO2NvZGVjcz12cDknO1xuICAgICAgaWYgKCFNZWRpYVJlY29yZGVyLmlzVHlwZVN1cHBvcnRlZChtaW1lVHlwZSkpIHtcbiAgICAgICAgbWltZVR5cGUgPSAndmlkZW8vd2VibSc7XG4gICAgICB9XG4gICAgICBpZiAoIU1lZGlhUmVjb3JkZXIuaXNUeXBlU3VwcG9ydGVkKG1pbWVUeXBlKSkge1xuICAgICAgICBtaW1lVHlwZSA9ICcnO1xuICAgICAgfVxuXG4gICAgICBjb25zdCByZWNvcmRlciA9IG5ldyBNZWRpYVJlY29yZGVyKHN0cmVhbSwgbWltZVR5cGUgPyB7IG1pbWVUeXBlIH0gOiB1bmRlZmluZWQpO1xuICAgICAgY29uc3QgY2h1bmtzOiBCbG9iW10gPSBbXTtcblxuICAgICAgcmVjb3JkZXIub25kYXRhYXZhaWxhYmxlID0gKGUpID0+IHtcbiAgICAgICAgaWYgKGUuZGF0YSAmJiBlLmRhdGEuc2l6ZSA+IDApIHtcbiAgICAgICAgICBjaHVua3MucHVzaChlLmRhdGEpO1xuICAgICAgICB9XG4gICAgICB9O1xuXG4gICAgICByZWNvcmRlci5vbnN0b3AgPSAoKSA9PiB7XG4gICAgICAgIGNvbnN0IGZpbmFsQmxvYiA9IG5ldyBCbG9iKGNodW5rcywgeyB0eXBlOiAndmlkZW8vd2VibScgfSk7XG4gICAgICAgIHJlc29sdmUoZmluYWxCbG9iKTtcbiAgICAgIH07XG5cbiAgICAgIHJlY29yZGVyLm9uZXJyb3IgPSAoZXJyKSA9PiByZWplY3QoZXJyKTtcblxuICAgICAgcmVjb3JkZXIuc3RhcnQoKTtcblxuICAgICAgY29uc3Qgc3RhcnRUaW1lID0gcGVyZm9ybWFuY2Uubm93KCk7XG4gICAgICBjb25zdCBpbnRlcnZhbCA9IHNldEludGVydmFsKCgpID0+IHtcbiAgICAgICAgY29uc3QgZWxhcHNlZCA9IHBlcmZvcm1hbmNlLm5vdygpIC0gc3RhcnRUaW1lO1xuICAgICAgICBjb25zdCBwcm9ncmVzcyA9IE1hdGgubWluKDEsIGVsYXBzZWQgLyBkdXJhdGlvbk1zKTtcbiAgICAgICAgaWYgKG9uUHJvZ3Jlc3MpIG9uUHJvZ3Jlc3MocHJvZ3Jlc3MpO1xuICAgICAgICBpZiAoZWxhcHNlZCA+PSBkdXJhdGlvbk1zKSB7XG4gICAgICAgICAgY2xlYXJJbnRlcnZhbChpbnRlcnZhbCk7XG4gICAgICAgICAgcmVjb3JkZXIuc3RvcCgpO1xuICAgICAgICB9XG4gICAgICB9LCA1MCk7XG4gICAgfSBjYXRjaCAoZXJyKSB7XG4gICAgICByZWplY3QoZXJyKTtcbiAgICB9XG4gIH0pO1xufVxuXG5leHBvcnQgZnVuY3Rpb24gZG93bmxvYWRCbG9iKGJsb2I6IEJsb2IsIGZpbGVuYW1lOiBzdHJpbmcpIHtcbiAgY29uc3QgdXJsID0gVVJMLmNyZWF0ZU9iamVjdFVSTChibG9iKTtcbiAgY29uc3QgYSA9IGRvY3VtZW50LmNyZWF0ZUVsZW1lbnQoJ2EnKTtcbiAgYS5ocmVmID0gdXJsO1xuICBhLmRvd25sb2FkID0gZmlsZW5hbWU7XG4gIGRvY3VtZW50LmJvZHkuYXBwZW5kQ2hpbGQoYSk7XG4gIGEuY2xpY2soKTtcbiAgZG9jdW1lbnQuYm9keS5yZW1vdmVDaGlsZChhKTtcbiAgc2V0VGltZW91dCgoKSA9PiBVUkwucmV2b2tlT2JqZWN0VVJMKHVybCksIDEwMDApO1xufVxuIl19

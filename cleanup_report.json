@@ -1,0 +1,26 @@
+{
+  "screenshots_removed": [
+    "/Users/krzysztofjarzyna/Pictures/Zrzut ekranu 2026-10-23 o 12.14.05.png",
+    "/Users/krzysztofjarzyna/Pictures/Zrzut ekranu 2026-10-23 o 12.12.16.png",
+    "/Users/krzysztofjarzyna/Pictures/Zrzut ekranu 2026-10-23 o 12.12.09.png",
+    "/Users/krzysztofjarzyna/Pictures/Zrzut ekranu 2026-10-23 o 12.13.48.png",
+    "/Users/krzysztofjarzyna/Pictures/doszyński/Zrzut ekranu 2026-10-23 o 13.50.10.png",
+    "/Users/krzysztofjarzyna/Pictures/Paralexa outdoor of clinic:view in windows/Zrzut ekranu 2026-10-23 o 13.50.10.png",
+    "/Users/krzysztofjarzyna/Pictures/Paralexa outdoor of clinic:view in windows/Zrzut ekranu 2026-10-23 o 13.42.14.png",
+    "/Users/krzysztofjarzyna/Pictures/Apps/Paralexa outdoor of clinic:view in windows/Zrzut ekranu 2026-10-23 o 13.50.10.png",
+    "/Users/krzysztofjarzyna/Pictures/Apps/Paralexa outdoor of clinic:view in windows/Zrzut ekranu 2026-10-23 o 13.42.14.png",
+    "/Users/krzysztofjarzyna/Downloads/Zrzut ekranu 2026-10-23 o 18.53.59-kopia.png"
+  ],
+  "duplicate_sentinel_folders_removed": 115,
+  "duplicates_removed": 665,
+  "html_sidecars_removed": 20,
+  "sorted_counts": {
+    "Budynki": 1127,
+    "Aplikacja": 361,
+    "Ikony": 202,
+    "Wnętrza": 167
+  },
+  "errors": [
+    "Folder remove /Users/krzysztofjarzyna/Downloads/SENTINEL_SYSTEM_IMMUNIZATION_BUNDLE_2026-10-25 (1): [Errno 1] Operation not permitted: 'Sentinel_Registry_IFEO_Vaccine.reg'"
+  ]
+}

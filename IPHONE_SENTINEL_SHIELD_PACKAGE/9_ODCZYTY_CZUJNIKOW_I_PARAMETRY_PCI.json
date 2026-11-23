@@ -1,0 +1,154 @@
+{
+  "metadata": {
+    "generatedAt": "2026-10-24T15:01:18.626Z",
+    "system": "Sentinel Shield Hardware & Sensors Telemetry Matrix",
+    "mode": "OFFLINE_RESEARCH_VALIDATED",
+    "safetyCompliance": "WCAG 2.1 AAA Photosensitive Safe",
+    "soundLevelDb": 0,
+    "strobeFrequencyHz": 0
+  },
+  "sensorProbes": [
+    {
+      "id": "SENSOR_DWM_SCREEN",
+      "name": "Czujnik Ekranowy DWM & DirectFlip",
+      "vector": "HWND_TOPMOST / DWM Flip Model Hook",
+      "status": "SECURE",
+      "hardwareAddress": "GPU Composition Surface #0 (DWM.exe HWND:0x00010024)",
+      "strobeShieldActive": true
+    },
+    {
+      "id": "SENSOR_PCIE_BUS",
+      "name": "Czujnik Magistrali PCIe & DMA",
+      "vector": "Magistrala PCIe x16 / GPU Bus DMA Channel",
+      "status": "SECURE",
+      "hardwareAddress": "PCIe Bus 01:00.0 (Slot 1, Lane x16 Gen5)",
+      "carrierFrequencyGhz": 32
+    },
+    {
+      "id": "SENSOR_USB_HID",
+      "name": "Czujnik Peryferiów HID & Klawiatury",
+      "vector": "RawInput / WH_KEYBOARD_LL Message Hook",
+      "status": "SECURE",
+      "hardwareAddress": "USB Host Controller 0x0C03 (Polling 1000 Hz)"
+    },
+    {
+      "id": "SENSOR_RAM_DDR5",
+      "name": "Czujnik Pamięci Fizycznej RAM DDR5",
+      "vector": "Zwielokrotniony Zrzut Modułów & Wstrzyknięcie Kodu",
+      "status": "SECURE",
+      "hardwareAddress": "Physical Memory Controller DIMM_A1/B1 (6400 MT/s)"
+    },
+    {
+      "id": "SENSOR_SOCKET_NET",
+      "name": "Czujnik Gniazd Sieciowych Raw Socket & C2",
+      "vector": "Współbieżne Połączenia Wychodzące Bez DNS",
+      "status": "SECURE",
+      "hardwareAddress": "Air-Gap Isolated / Zero Network Sockets"
+    },
+    {
+      "id": "SENSOR_FS_NTFS",
+      "name": "Czujnik MFT NTFS & Zmian w Uprawnieniach ACL",
+      "vector": "Modyfikacja Tablicy MFT / Zmiany Praw Dziedziczenia",
+      "status": "SECURE",
+      "hardwareAddress": "Volume C: NVMe GUID Partition Table"
+    }
+  ],
+  "pciConnectors": [
+    {
+      "id": "conn-pcie-1",
+      "name": "PCIe Gen5 x16 Slot #1 (Primary Accelerator / GPU)",
+      "voltageV": 12.08,
+      "currentAmperes": 14.85,
+      "powerWatts": 179.39,
+      "frequencyMhz": 32000,
+      "impedanceOhms": 85.2,
+      "noiseSnrDb": 42.6,
+      "emFieldStrengthVpm": 3.4,
+      "coords": {
+        "x": 120,
+        "y": 180,
+        "pinCount": 164
+      }
+    },
+    {
+      "id": "conn-pcie-2",
+      "name": "PCIe Gen4 x4 Slot #2 (NVMe RAID Direct Bus)",
+      "voltageV": 3.32,
+      "currentAmperes": 3.12,
+      "powerWatts": 10.36,
+      "frequencyMhz": 16000,
+      "impedanceOhms": 84.8,
+      "noiseSnrDb": 46.1,
+      "emFieldStrengthVpm": 1.1,
+      "coords": {
+        "x": 120,
+        "y": 320,
+        "pinCount": 64
+      }
+    },
+    {
+      "id": "conn-usbc-pd",
+      "name": "USB-C PD 3.1 & Thunderbolt 4 High-Speed Bus",
+      "voltageV": 20.05,
+      "currentAmperes": 4.82,
+      "powerWatts": 96.64,
+      "frequencyMhz": 40000,
+      "impedanceOhms": 90.1,
+      "noiseSnrDb": 39.8,
+      "emFieldStrengthVpm": 2.8,
+      "coords": {
+        "x": 40,
+        "y": 110,
+        "pinCount": 24
+      }
+    },
+    {
+      "id": "conn-dp-hdmi",
+      "name": "DisplayPort 2.1 & HDMI 2.1 FRL Output Header",
+      "voltageV": 3.29,
+      "currentAmperes": 1.42,
+      "powerWatts": 4.67,
+      "frequencyMhz": 80000,
+      "impedanceOhms": 100.2,
+      "noiseSnrDb": 48.5,
+      "emFieldStrengthVpm": 0.9,
+      "coords": {
+        "x": 40,
+        "y": 220,
+        "pinCount": 38
+      }
+    },
+    {
+      "id": "conn-atx-12v",
+      "name": "EPS / ATX12VO Motherboard Main Auxiliary Power",
+      "voltageV": 12.14,
+      "currentAmperes": 22.4,
+      "powerWatts": 271.94,
+      "frequencyMhz": 0,
+      "impedanceOhms": 0.12,
+      "noiseSnrDb": 58.2,
+      "emFieldStrengthVpm": 4.2,
+      "coords": {
+        "x": 260,
+        "y": 80,
+        "pinCount": 24
+      }
+    },
+    {
+      "id": "conn-i2c-smbus",
+      "name": "SMBus / I2C Hardware Environmental Sensors Rail",
+      "voltageV": 3.3,
+      "currentAmperes": 0.08,
+      "powerWatts": 0.26,
+      "frequencyMhz": 0.4,
+      "impedanceOhms": 120,
+      "noiseSnrDb": 52,
+      "emFieldStrengthVpm": 0.2,
+      "coords": {
+        "x": 210,
+        "y": 270,
+        "pinCount": 8
+      }
+    }
+  ]
+}

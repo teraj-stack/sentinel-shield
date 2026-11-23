@@ -1,0 +1,35 @@
+// Sentinel Offline Vite Client Stub (100% Local Disk Mode)
+const sheets = new Map();
+export function createHotContext(ownerPath) {
+  return {
+    accept() {},
+    acceptExports() {},
+    dispose() {},
+    prune() {},
+    invalidate() {},
+    on() {},
+    off() {},
+    send() {},
+    data: {}
+  };
+}
+export function updateStyle(id, content) {
+  let style = sheets.get(id);
+  if (!style) {
+    style = document.createElement('style');
+    style.setAttribute('data-vite-dev-id', id);
+    document.head.appendChild(style);
+    sheets.set(id, style);
+  }
+  style.textContent = content;
+}
+export function removeStyle(id) {
+  const style = sheets.get(id);
+  if (style) {
+    style.remove();
+    sheets.delete(id);
+  }
+}
+export function injectQuery(url) {
+  return url;
+}

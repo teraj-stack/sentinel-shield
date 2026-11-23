@@ -1,0 +1,2329 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sentinel 3D &amp; VR Spatial Studio — Klinika VI, Liquid Glass &amp; 7 Aplikacji Offline</title>
+  <style>
+    :root {
+      --bg-deep: #07111e;
+      --bg-mid: #0e2138;
+      --lg-surface: rgba(255, 255, 255, 0.14);
+      --lg-surface-strong: rgba(15, 32, 55, 0.72);
+      --lg-surface-card: rgba(16, 36, 62, 0.62);
+      --lg-border-top: rgba(255, 255, 255, 0.62);
+      --lg-border-bottom: rgba(255, 255, 255, 0.16);
+      --text-main: #f4f8ff;
+      --text-muted: #9eb6d4;
+      --accent-cyan: #00d2d3;
+      --accent-cobalt: #2b6aff;
+      --accent-lime: #b8ff01;
+      --accent-amber: #ff9f43;
+      --accent-rose: #ff5252;
+      --shadow-glass: 0 20px 44px -12px rgba(3, 10, 22, 0.65),
+                      inset 0 2px 3px 0 rgba(255, 255, 255, 0.45),
+                      inset 0 -3px 8px 0 rgba(0, 210, 211, 0.14);
+    }
+
+    body.vi-high-contrast {
+      --bg-deep: #05070a;
+      --bg-mid: #05070a;
+      --lg-surface: #0c1017;
+      --lg-surface-strong: #05070a;
+      --lg-surface-card: #090d14;
+      --lg-border-top: #ffd600;
+      --lg-border-bottom: #00e5ff;
+      --text-main: #ffffff;
+      --text-muted: #ffd600;
+      --accent-cyan: #00e5ff;
+      --accent-cobalt: #ffd600;
+      --accent-lime: #00ff66;
+      --shadow-glass: 0 0 0 2px #ffd600;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Plus Jakarta Sans", "Inter", sans-serif;
+      background: radial-gradient(circle at 20% 15%, #123052 0%, #07111e 60%, #040911 100%);
+      color: var(--text-main);
+      overflow: hidden;
+      user-select: none;
+    }
+
+    /* Full-bleed 3D WebGL background canvas */
+    #webgl-container {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    #webgl-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* VR Stereoscopic Split-Screen Overlay */
+    #vr-split-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+      display: none;
+    }
+    #vr-split-overlay.active {
+      display: block;
+    }
+    #vr-split-overlay::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      width: 3px;
+      background: linear-gradient(180deg, transparent, #00d2d3, #b8ff01, #00d2d3, transparent);
+      transform: translateX(-50%);
+      box-shadow: 0 0 18px #00d2d3;
+    }
+    .vr-eye-badge {
+      position: absolute;
+      bottom: 22px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: rgba(6, 16, 30, 0.82);
+      border: 1px solid rgba(0, 210, 211, 0.6);
+      color: #b8ff01;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .vr-eye-badge.left { left: 22%; }
+    .vr-eye-badge.right { right: 22%; }
+
+    /* Spatial HUD Layer */
+    .spatial-hud {
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 18px 22px;
+    }
+
+    .hud-interactive {
+      pointer-events: auto;
+    }
+
+    /* Top Bar with Asymmetric Antarctica Cutout */
+    .top-bar-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .antarctica-cutout-nav {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 10px 18px 14px 16px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.24) 0%, rgba(16, 38, 66, 0.78) 100%);
+      backdrop-filter: blur(26px) saturate(190%);
+      -webkit-backdrop-filter: blur(26px) saturate(190%);
+      border-top: 1.5px solid var(--lg-border-top);
+      border-left: 1.5px solid var(--lg-border-top);
+      border-right: 1px solid var(--lg-border-bottom);
+      border-bottom: 1px solid var(--lg-border-bottom);
+      border-radius: 26px 26px 26px 32px;
+      box-shadow: var(--shadow-glass);
+      position: relative;
+    }
+
+    .brand-orb {
+      width: 44px;
+      height: 44px;
+      border-radius: 15px;
+      background: radial-gradient(circle at 30% 25%, #b8ff01 0%, #00d2d3 48%, #1e5bff 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 16px;
+      color: #04101f;
+      box-shadow: 0 8px 20px rgba(0, 210, 211, 0.45), inset 0 2px 3px rgba(255, 255, 255, 0.85);
+      flex-shrink: 0;
+    }
+
+    .brand-title-wrap {
+      margin-right: 8px;
+    }
+    .brand-title {
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .offline-pill {
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(184, 255, 1, 0.18);
+      border: 1px solid #b8ff01;
+      color: #b8ff01;
+      letter-spacing: 0.06em;
+    }
+    .brand-subtitle {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* Mode Switcher Tabs (Liquid Glass Pills) */
+    .nav-tabs {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .lg-pill-btn {
+      appearance: none;
+      border: none;
+      cursor: pointer;
+      padding: 10px 16px;
+      border-radius: 9999px;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--text-main);
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.05) 100%);
+      border-top: 1.5px solid rgba(255, 255, 255, 0.55);
+      border-left: 1px solid rgba(255, 255, 255, 0.4);
+      border-right: 1px solid rgba(255, 255, 255, 0.15);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 8px 20px -6px rgba(0, 0, 0, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.5);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .lg-pill-btn:hover {
+      transform: translateY(-1.5px);
+      background: linear-gradient(135deg, rgba(0, 210, 211, 0.32) 0%, rgba(43, 106, 255, 0.25) 100%);
+      border-color: #00d2d3;
+    }
+
+    .lg-pill-btn.active {
+      background: linear-gradient(135deg, #00d2d3 0%, #2b6aff 100%);
+      color: #03101f;
+      font-weight: 800;
+      border-color: #ffffff;
+      box-shadow: 0 10px 26px rgba(0, 210, 211, 0.48), inset 0 2px 3px rgba(255, 255, 255, 0.85);
+    }
+
+    .lg-pill-btn:focus-visible {
+      outline: 3px solid #ffd600;
+      outline-offset: 2px;
+    }
+
+    /* Right Telemetry Strip (Antarctica Forecast Style) */
+    .telemetry-strip {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px;
+      border-radius: 24px;
+      background: var(--lg-surface-strong);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border-top: 1.5px solid var(--lg-border-top);
+      border-bottom: 1px solid var(--lg-border-bottom);
+      box-shadow: var(--shadow-glass);
+    }
+
+    .telemetry-metric {
+      padding: 4px 10px;
+      border-right: 1px solid rgba(255, 255, 255, 0.14);
+      text-align: right;
+    }
+    .telemetry-metric:last-of-type {
+      border-right: none;
+    }
+    .telemetry-val {
+      font-size: 16px;
+      font-weight: 800;
+      color: #00d2d3;
+      font-variant-numeric: tabular-nums;
+    }
+    .telemetry-lbl {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+    }
+
+    /* Main Content Panels Grid */
+    .workspace-area {
+      flex: 1;
+      min-height: 0;
+      margin: 14px 0;
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+      align-items: stretch;
+      gap: 18px;
+      pointer-events: none;
+    }
+
+    .tab-view {
+      display: none;
+      width: 100%;
+      height: 100%;
+      justify-content: space-between;
+      align-items: stretch;
+      gap: 18px;
+      pointer-events: none;
+    }
+    .tab-view.active {
+      display: flex;
+    }
+
+    /* Liquid Glass Floating Panels */
+    .lg-panel {
+      pointer-events: auto;
+      background: var(--lg-surface-card);
+      backdrop-filter: blur(26px) saturate(190%);
+      -webkit-backdrop-filter: blur(26px) saturate(190%);
+      border-top: 1.5px solid var(--lg-border-top);
+      border-left: 1.5px solid rgba(255, 255, 255, 0.42);
+      border-right: 1px solid var(--lg-border-bottom);
+      border-bottom: 1px solid var(--lg-border-bottom);
+      border-radius: 26px;
+      box-shadow: var(--shadow-glass);
+      padding: 18px;
+      overflow-y: auto;
+      max-height: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .lg-panel::-webkit-scrollbar {
+      width: 6px;
+    }
+    .lg-panel::-webkit-scrollbar-thumb {
+      background: rgba(0, 210, 211, 0.4);
+      border-radius: 999px;
+    }
+
+    .panel-left {
+      width: 390px;
+      flex-shrink: 0;
+    }
+    .panel-right {
+      width: 400px;
+      flex-shrink: 0;
+    }
+    .panel-full {
+      width: 100%;
+      height: 100%;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+    }
+    .panel-title {
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      color: #00d2d3;
+    }
+    .panel-badge {
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: rgba(43, 106, 255, 0.28);
+      border: 1px solid rgba(0, 210, 211, 0.5);
+      color: #f4f8ff;
+    }
+
+    /* Section Cards inside Panel */
+    .sub-card {
+      background: rgba(7, 18, 34, 0.55);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 18px;
+      padding: 13px;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+
+    .sub-card-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: #b8ff01;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .field-row {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .field-label {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+    }
+    .field-label strong {
+      color: var(--text-main);
+      font-variant-numeric: tabular-nums;
+    }
+
+    select.lg-select, input.lg-input {
+      width: 100%;
+      padding: 9px 12px;
+      border-radius: 12px;
+      background: rgba(12, 28, 52, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      color: var(--text-main);
+      font-size: 12.5px;
+      font-weight: 600;
+    }
+
+    input[type="range"].lg-slider {
+      width: 100%;
+      accent-color: #00d2d3;
+      cursor: pointer;
+    }
+
+    .btn-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .btn-grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 7px;
+    }
+
+    .action-btn {
+      appearance: none;
+      cursor: pointer;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.04));
+      color: var(--text-main);
+      font-size: 12px;
+      font-weight: 700;
+      text-align: center;
+      transition: all 0.18s ease;
+    }
+    .action-btn:hover {
+      border-color: #00d2d3;
+      background: rgba(0, 210, 211, 0.22);
+      transform: translateY(-1px);
+    }
+    .action-btn.primary {
+      background: linear-gradient(135deg, #00d2d3 0%, #2b6aff 100%);
+      color: #04101f;
+      font-weight: 800;
+      border-color: #ffffff;
+    }
+    .action-btn.lime {
+      background: linear-gradient(135deg, #b8ff01 0%, #00d2d3 100%);
+      color: #04101f;
+      font-weight: 800;
+      border-color: #ffffff;
+    }
+    .action-btn.warn {
+      background: rgba(255, 159, 67, 0.22);
+      border-color: #ff9f43;
+      color: #ffdca8;
+    }
+
+    /* Live Voice & VI Route Banner */
+    .vi-voice-box {
+      padding: 12px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(0, 210, 211, 0.18), rgba(184, 255, 1, 0.1));
+      border: 1.5px solid #00d2d3;
+      font-size: 12.5px;
+      line-height: 1.48;
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    .waypoint-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 165px;
+      overflow-y: auto;
+    }
+    .waypoint-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 7px 10px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.06);
+      font-size: 11.5px;
+      border-left: 3px solid #00d2d3;
+    }
+    .waypoint-item.current {
+      background: rgba(184, 255, 1, 0.2);
+      border-left-color: #b8ff01;
+      font-weight: 700;
+    }
+
+    /* Apps Hub Grid (Tab 3) */
+    .apps-layout {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 16px;
+      width: 100%;
+      height: 100%;
+      pointer-events: auto;
+    }
+
+    .app-selector-card {
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: rgba(10, 24, 44, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      cursor: pointer;
+      transition: all 0.18s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .app-selector-card:hover {
+      border-color: #00d2d3;
+      transform: translateX(3px);
+    }
+    .app-selector-card.active {
+      background: linear-gradient(135deg, rgba(0, 210, 211, 0.28), rgba(43, 106, 255, 0.28));
+      border: 1.5px solid #b8ff01;
+      box-shadow: 0 8px 24px rgba(0, 210, 211, 0.28);
+    }
+    .app-selector-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .app-selector-desc {
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.35;
+    }
+
+    .iframe-stage {
+      display: flex;
+      flex-direction: column;
+      background: rgba(6, 15, 28, 0.88);
+      border-radius: 26px;
+      border: 1.5px solid rgba(255, 255, 255, 0.35);
+      box-shadow: var(--shadow-glass);
+      overflow: hidden;
+    }
+    .iframe-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
+      background: rgba(12, 28, 50, 0.92);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    .iframe-url-pill {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 11.5px;
+      color: #b8ff01;
+      background: rgba(0, 0, 0, 0.35);
+      padding: 5px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(184, 255, 1, 0.35);
+    }
+    #app-live-iframe {
+      flex: 1;
+      width: 100%;
+      border: none;
+      background: #050b14;
+    }
+
+    /* Reference Gallery Grid (Tab 4) */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+      gap: 14px;
+    }
+    .gallery-card {
+      background: rgba(8, 20, 38, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 18px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .gallery-card img {
+      width: 100%;
+      height: 165px;
+      object-fit: cover;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+    }
+    .gallery-card-body {
+      padding: 11px 13px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .gallery-card-title {
+      font-size: 12.5px;
+      font-weight: 800;
+      color: #00d2d3;
+    }
+    .gallery-card-meta {
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.38;
+    }
+
+    /* Bottom Dock Bar */
+    .bottom-dock {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 10px 18px;
+      border-radius: 22px;
+      background: var(--lg-surface-strong);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border-top: 1.5px solid var(--lg-border-top);
+      border-bottom: 1px solid var(--lg-border-bottom);
+      box-shadow: var(--shadow-glass);
+      flex-wrap: wrap;
+    }
+
+    .dock-status {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .pulse-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #b8ff01;
+      box-shadow: 0 0 12px #b8ff01;
+    }
+
+    .kbd-tag {
+      font-family: "SF Mono", Menlo, monospace;
+      font-size: 10.5px;
+      padding: 2px 6px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #ffffff;
+    }
+
+    @media (max-width: 1180px) {
+      .panel-left, .panel-right {
+        width: 330px;
+      }
+      .apps-layout {
+        grid-template-columns: 290px 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 1. FULL-BLEED 3D / VR WEBGL SCENE (Three.js r186 Local Offline) -->
+  <div id="webgl-container" aria-label="Interaktywna scena 3D i VR Kliniki oraz Studio Modeli">
+    <canvas id="webgl-canvas"></canvas>
+  </div>
+
+  <!-- VR Stereoscopic Split Overlay -->
+  <div id="vr-split-overlay">
+    <div class="vr-eye-badge left">LEWE OKO · VR STEREOSCOPIC (IPD 64 mm)</div>
+    <div class="vr-eye-badge right">PRAWE OKO · VR STEREOSCOPIC (IPD 64 mm)</div>
+  </div>
+
+  <!-- Live Screen-Reader Region for Visually Impaired (VI) Navigation -->
+  <div id="vi-aria-live" role="status" aria-live="assertive" aria-atomic="true"
+       style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;">
+    Gotowy system nawigacji przestrzennej 3D i VR po klinice.
+  </div>
+
+  <!-- 2. SPATIAL LIQUID GLASS HUD LAYER -->
+  <div class="spatial-hud">
+
+    <!-- TOP ASYMMETRIC CUTOUT NAVBAR -->
+    <header class="top-bar-row hud-interactive">
+      <nav class="antarctica-cutout-nav" aria-label="Główna nawigacja pakietu 3D i VR">
+        <div class="brand-orb" title="Sentinel 3D & VR Local Suite">3D</div>
+        <div class="brand-title-wrap">
+          <div class="brand-title">
+            SENTINEL 3D · VR · VI CLINIC STUDIO
+            <span class="offline-pill">100% DYSK LOKALNY OFFLINE</span>
+          </div>
+          <div class="brand-subtitle">
+            Apple M1 Pro (Metal 4 · 382.5.3) · Three.js r186 · HRTF 3D Audio · Liquid Glass UI
+          </div>
+        </div>
+
+        <div class="nav-tabs" role="tablist">
+          <button class="lg-pill-btn active" role="tab" aria-selected="true" data-tab="tab-clinic-vr">
+            <span>🏥</span> 1. Klinika 3D / VR (VI) &amp; Kreator
+          </button>
+          <button class="lg-pill-btn" role="tab" aria-selected="false" data-tab="tab-lidar-6param">
+            <span>🔬</span> 2. Analizator 6-Parametrowy LiDAR 3D
+          </button>
+          <button class="lg-pill-btn" role="tab" aria-selected="false" data-tab="tab-apps-hub">
+            <span>🚀</span> 3. Hub 7 Aplikacji 3D / VR (Na Żywo)
+          </button>
+          <button class="lg-pill-btn" role="tab" aria-selected="false" data-tab="tab-liquid-glass-kit">
+            <span>💎</span> 4. Liquid Glass UI Kit &amp; Okna 2K
+          </button>
+        </div>
+      </nav>
+
+      <!-- TELEMETRY & ACCESSIBILITY STRIP -->
+      <div class="telemetry-strip">
+        <div class="telemetry-metric">
+          <div class="telemetry-val" id="hud-fps">60 FPS</div>
+          <div class="telemetry-lbl">Render WebGL2</div>
+        </div>
+        <div class="telemetry-metric">
+          <div class="telemetry-val" id="hud-whi-mini">84.2%</div>
+          <div class="telemetry-lbl">Indeks WHI 3D</div>
+        </div>
+        <div class="telemetry-metric">
+          <div class="telemetry-val" id="hud-audio-state">AKTYWNY</div>
+          <div class="telemetry-lbl">Beacon HRTF</div>
+        </div>
+        <button class="lg-pill-btn" id="btn-toggle-vr" title="Przełącz tryb stereoskopowy Gogli VR (WebXR Split-Screen)">
+          🥽 Tryb VR
+        </button>
+        <button class="lg-pill-btn" id="btn-toggle-contrast" title="Przełącz tryb wysokiego kontrastu WCAG AAA (Alt+K)">
+          👁️ Kontrast AAA
+        </button>
+      </div>
+    </header>
+
+    <!-- WORKSPACE AREA -->
+    <main class="workspace-area">
+
+      <!-- ===================================================================
+           TAB 1: NAWIGACJA 3D / VR KLINIKI (VI) & KREATOR OBIEKTÓW 3D
+           =================================================================== -->
+      <section class="tab-view active" id="tab-clinic-vr" aria-label="Nawigacja 3D i VR po klinice oraz kreator modeli">
+
+        <!-- Left Panel: VI Accessible Clinic Wayfinding & HRTF Audio -->
+        <aside class="lg-panel panel-left">
+          <div class="panel-header">
+            <span class="panel-title">🧭 Nawigacja 3D Kliniki (Pacjenci VI)</span>
+            <span class="panel-badge">A* + HRTF 528 Hz</span>
+          </div>
+
+          <div class="sub-card">
+            <div class="sub-card-title">
+              <span>Trasa Dostępna (Ścieżki Naprowadzające)</span>
+              <span>Krok: 0.72 m</span>
+            </div>
+
+            <div class="field-row">
+              <label class="field-label" for="vi-start-select">Punkt początkowy:</label>
+              <select class="lg-select" id="vi-start-select">
+                <option value="recepcja" selected>Recepcja Główna (Wejście · Punkt Informacyjny)</option>
+                <option value="korytarz_centralny">Skrzyżowanie Korytarza Głównego (Guzki Uwagi)</option>
+                <option value="gabinet_104">Gabinet 104 — Okulistyka Laserowa &amp; Siatkówka</option>
+                <option value="gabinet_108">Gabinet 108 — Flebologia &amp; Skaner LiDAR 3D</option>
+                <option value="sala_112">Sala 112 — Mikrochirurgia &amp; Diagnostyka Obrazowa</option>
+                <option value="winda">Winda Dostępna (Bramka Dźwiękowa + Braille)</option>
+                <option value="strefa_okien">Strefa Relaksu — Okna Paralaksy 3D (Widok 2K)</option>
+              </select>
+            </div>
+
+            <div class="field-row">
+              <label class="field-label" for="vi-target-select">Cel w klinice (Beacon Dźwiękowy 3D):</label>
+              <select class="lg-select" id="vi-target-select">
+                <option value="gabinet_108" selected>Gabinet 108 — Flebologia &amp; Skaner LiDAR 3D</option>
+                <option value="gabinet_104">Gabinet 104 — Okulistyka Laserowa &amp; Siatkówka</option>
+                <option value="sala_112">Sala 112 — Mikrochirurgia &amp; Diagnostyka Obrazowa</option>
+                <option value="winda">Winda Dostępna (Bramka Dźwiękowa + Braille)</option>
+                <option value="strefa_okien">Strefa Relaksu — Okna Paralaksy 3D (Widok 2K)</option>
+                <option value="recepcja">Recepcja Główna (Wejście · Punkt Informacyjny)</option>
+              </select>
+            </div>
+
+            <div class="btn-grid-2">
+              <button class="action-btn lime" id="btn-vi-start-walk">
+                🚶 prowadź po Trasie 3D
+              </button>
+              <button class="action-btn primary" id="btn-vi-speak">
+                🔊 Komunikat Głosowy
+              </button>
+            </div>
+            <div class="btn-grid-2">
+              <button class="action-btn" id="btn-vi-next-step">
+                ⏭️ Następny Węzeł (W)
+              </button>
+              <button class="action-btn warn" id="btn-vi-beacon-ping">
+                📡 Impuls HRTF (528 Hz)
+              </button>
+            </div>
+          </div>
+
+          <div class="sub-card">
+            <div class="sub-card-title">
+              <span>Komunikat Zegarowy i Liczba Kroków</span>
+              <span id="vi-distance-badge">11.2 m · 16 kroków</span>
+            </div>
+            <div class="vi-voice-box" id="vi-instruction-text">
+              Trasa gotowa: Z Recepcji Głównej idź prosto 6.0 metrów (8 kroków) na godzinie 12 wzdłuż linii naprowadzającej, a na guzkach uwagi skręć w prawo na godzinę 3 do Gabinetu 108.
+            </div>
+            <div class="waypoint-list" id="vi-waypoint-list"></div>
+          </div>
+
+          <div class="sub-card">
+            <div class="sub-card-title">
+              <span>Kamera 3D &amp; Perspektywa VR</span>
+              <span id="cam-mode-label">Izometria BIM</span>
+            </div>
+            <div class="btn-grid-2">
+              <button class="action-btn" data-cam="iso">📐 Rzut 3D BIM</button>
+              <button class="action-btn" data-cam="pov">👁️ POV Pacjenta (1.65m)</button>
+              <button class="action-btn" data-cam="shield">🛡️ Tarcza &amp; Chmura 3D</button>
+              <button class="action-btn" data-cam="window">🪟 Okno Paralaksy 2K</button>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Right Panel: 3D Model & Liquid Glass Builder -->
+        <aside class="lg-panel panel-right">
+          <div class="panel-header">
+            <span class="panel-title">🧱 Kreator Modeli 3D &amp; Liquid Glass</span>
+            <span class="panel-badge">Three.js Physical</span>
+          </div>
+
+          <div class="sub-card">
+            <div class="sub-card-title">
+              <span>Dodaj Moduł Przestrzenny 3D do Kliniki</span>
+              <span id="scene-obj-count">Obiekty: 24</span>
+            </div>
+            <div class="btn-grid-2">
+              <button class="action-btn primary" id="btn-add-glass-wall">
+                ➕ Ściana Liquid Glass
+              </button>
+              <button class="action-btn lime" id="btn-add-audio-beacon">
+                ➕ Beacon HRTF 3D
+              </button>
+              <button class="action-btn" id="btn-add-tactile-node">
+                ➕ Pole Guzków Uwagi
+              </button>
+              <button class="action-btn" id="btn-add-holo-pillar">
+                ➕ Kolumna Hologramu
+              </button>
+            </div>
+          </div>
+
+          <div class="sub-card">
+            <div class="sub-card-title">
+              <span>Parametry Szkła Refrakcyjnego (Liquid Glass)</span>
+              <span>IOR + Transmisja</span>
+            </div>
+
+            <div class="field-row">
+              <label class="field-label">
+                <span>Transmisja Optyczna (Transmission)</span>
+                <strong id="val-mat-transmission">0.86</strong>
+              </label>
+              <input type="range" class="lg-slider" id="slider-mat-transmission" min="0.1" max="1.0" step="0.02" value="0.86" />
+            </div>
+
+            <div class="field-row">
+              <label class="field-label">
+                <span>Współczynnik Załamania (IOR)</span>
+                <strong id="val-mat-ior">1.46</strong>
+              </label>
+              <input type="range" class="lg-slider" id="slider-mat-ior" min="1.05" max="2.20" step="0.02" value="1.46" />
+            </div>
+
+            <div class="field-row">
+              <label class="field-label">
+                <span>Szorstkość Matowa (Roughness)</span>
+                <strong id="val-mat-roughness">0.12</strong>
+              </label>
+              <input type="range" class="lg-slider" id="slider-mat-roughness" min="0.0" max="0.8" step="0.02" value="0.12" />
+            </div>
+
+            <div class="field-row">
+              <label class="field-label">
+                <span>Widok Okna Paralaksy 2K w Klinice</span>
+                <strong id="val-window-idx">Widok #1</strong>
+              </label>
+              <select class="lg-select" id="select-clinic-window">
+                <option value="1">Okno Kliniki #1 — Ogród Terapeutyczny (2K)</option>
+                <option value="2">Okno Kliniki #2 — Dziedziniec Słoneczny (2K)</option>
+                <option value="3">Okno Kliniki #3 — Aleja Parkowa (2K)</option>
+                <option value="4">Okno Kliniki #4 — Taras Widokowy (2K)</option>
+                <option value="5">Okno Kliniki #5 — Pawilon Wodny (2K)</option>
+                <option value="6">Okno Kliniki #6 — Panorama Wieczorna (2K)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="sub-card">
+            <div class="sub-card-title">
+              <span>Zapis na Dysku Lokalnym &amp; Eksport Sceny</span>
+              <span>AutoSave ON</span>
+            </div>
+            <div class="btn-grid-2">
+              <button class="action-btn primary" id="btn-export-scene-json">
+                💾 Eksportuj Scenę 3D (.JSON)
+              </button>
+              <button class="action-btn" id="btn-reset-scene">
+                🔄 Resetuj Układ 3D
+              </button>
+            </div>
+          </div>
+        </aside>
+
+      </section>
+
+      <!-- ===================================================================
+           TAB 2: 6-PARAMETROWY ANALIZATOR KLINICZNY 3D / LiDAR & FOTOGRAMETRIA
+           =================================================================== -->
+      <section class="tab-view" id="tab-lidar-6param" aria-label="6-Parametrowy Analizator Kliniczny 3D i LiDAR">
+
+        <!-- Left Panel: 6 Clinical Parameters Sliders -->
+        <aside class="lg-panel panel-left">
+          <div class="panel-header">
+            <span class="panel-title">🔬 6 Parametrów Klinicznych 3D / LiDAR</span>
+            <span class="panel-badge">PAC-2026-0419</span>
+          </div>
+
+          <div class="sub-card">
+            <div class="sub-card-title">
+              <span>Kalibracja Siatki LiDAR &amp; Fotogrametrii</span>
+              <span>SfM / MVS</span>
+            </div>
+
+            <div class="field-row">
+              <label class="field-label">
+                <span>1. Spektrum Barwne Tkanki (RYB Ziarnina %)</span>
+                <strong id="val-p1">76%</strong>
+              </label>
+              <input type="range" class="lg-slider param-slider" id="p1-ryb" min="0" max="100" value="76" />
+            </div>
+
+            <div class="field-row">
+              <label class="field-label">
+                <span>2. Głębia i Objętość LiDAR 3D (mm)</span>
+                <strong id="val-p2">-0.8 mm</strong>
+              </label>
+              <input type="range" class="lg-slider param-slider" id="p2-depth" min="-15" max="10" step="0.2" value="-0.8" />
+            </div>
+
+            <div class="field-row">
+              <label class="field-label">
+                <span>3. Indeks Perfuzji i Przekrwienia (Hue)</span>
+                <strong id="val-p3">68 / 100</strong>
+              </label>
+              <input type="range" class="lg-slider param-slider" id="p3-perfusion" min="0" max="100" value="68" />
+            </div>
+
+            <div class="field-row">
+              <label class="field-label">
+                <span>4. Gładkość Topografii Powierzchni 3D</span>
+                <strong id="val-p4">82%</strong>
+              </label>
+              <input type="range" class="lg-slider param-slider" id="p4-smoothness" min="0" max="100" value="82" />
+            </div>
+
+            <div class="field-row">
+              <label class="field-label">
+                <span>5. Krzywizna Brzegowa i Kontrakcja 3D</span>
+                <strong id="val-p5">79%</strong>
+              </label>
+              <input type="range" class="lg-slider param-slider" id="p5-contraction" min="0" max="100" value="79" />
+            </div>
+
+            <div class="field-row">
+              <label class="field-label">
+                <span>6. Indeks Połysku / Wilgotności (Specular)</span>
+                <strong id="val-p6">54%</strong>
+              </label>
+              <input type="range" class="lg-slider param-slider" id="p6-moisture" min="0" max="100" value="54" />
+            </div>
+          </div>
+
+          <div class="sub-card">
+            <div class="sub-card-title">
+              <span>Presety Przypadków Klinicznych 3D</span>
+              <span>Szybki Test</span>
+            </div>
+            <div class="btn-grid-3">
+              <button class="action-btn lime" data-preset="optimal">Zdrowy / Gojenie</button>
+              <button class="action-btn warn" data-preset="moderate">Obserwacja</button>
+              <button class="action-btn" data-preset="critical" style="border-color:#ff5252;color:#ffb8b8;">Zaostrzenie</button>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Right Panel: WHI 3D, CEI, Radar Chart & Export -->
+        <aside class="lg-panel panel-right">
+          <div class="panel-header">
+            <span class="panel-title">📊 Wyniki WHI 3D, CEI &amp; Radar 6-Osiowy</span>
+            <span class="panel-badge" id="clinical-urgency-badge">NORMA</span>
+          </div>
+
+          <div class="sub-card">
+            <div class="btn-grid-2">
+              <div style="padding:10px;border-radius:12px;background:rgba(184,255,1,0.12);border:1px solid #b8ff01;text-align:center;">
+                <div style="font-size:10.5px;color:#b8ff01;font-weight:700;">INDEKS GOJENIA WHI 3D</div>
+                <div style="font-size:24px;font-weight:900;color:#ffffff;margin-top:3px;" id="score-whi">78.4%</div>
+              </div>
+              <div style="padding:10px;border-radius:12px;background:rgba(0,210,211,0.12);border:1px solid #00d2d3;text-align:center;">
+                <div style="font-size:10.5px;color:#00d2d3;font-weight:700;">INDEKS ZAOSTRZENIA CEI</div>
+                <div style="font-size:24px;font-weight:900;color:#ffffff;margin-top:3px;" id="score-cei">22.1%</div>
+              </div>
+            </div>
+            <div class="vi-voice-box" id="clinical-interpretation">
+              Klasyfikacja: NORMA / PRAWIDŁOWA REGENERACJA TKANKI. Siatka 3D LiDAR wykazuje prawidłową ziarninę (76%) oraz stabilną kontrakcję brzegową (79%).
+            </div>
+          </div>
+
+          <div class="sub-card" style="align-items:center;">
+            <div class="sub-card-title" style="width:100%;">
+              <span>Wykres Radarowy 6 Parametrów 3D</span>
+              <span>SVG Live</span>
+            </div>
+            <svg id="radar-svg" width="230" height="210" viewBox="0 0 240 220" aria-label="Wykres radarowy 6 parametrów klinicznych"></svg>
+          </div>
+
+          <div class="sub-card">
+            <div class="sub-card-title">
+              <span>Eksport Dokumentacji Medycznej (Offline)</span>
+              <span>JSON + Excel CSV</span>
+            </div>
+            <div class="btn-grid-2">
+              <button class="action-btn primary" id="btn-export-clinical-json">
+                📥 Pobierz Rekord .JSON
+              </button>
+              <button class="action-btn lime" id="btn-export-clinical-csv">
+                📊 Pobierz Tabelę .CSV
+              </button>
+            </div>
+          </div>
+        </aside>
+
+      </section>
+
+      <!-- ===================================================================
+           TAB 3: WBUDOWANY HUB WSZYSTKICH 7 LOKALNYCH APLIKACJI 3D / VR / AR
+           =================================================================== -->
+      <section class="tab-view" id="tab-apps-hub" aria-label="Wbudowany przełącznik 7 lokalnych aplikacji 3D i VR">
+        <div class="apps-layout">
+
+          <!-- Left Column: App Selector List -->
+          <aside class="lg-panel" style="width:100%;">
+            <div class="panel-header">
+              <span class="panel-title">🚀 7 Zbudowanych Aplikacji 3D / VR</span>
+              <span class="panel-badge">100% Lokalnie</span>
+            </div>
+
+            <div id="apps-selector-list" style="display:flex;flex-direction:column;gap:9px;">
+              <div class="app-selector-card active" data-app-url="/apps/vortexvr/index.html" data-app-name="VortexVR Studio & Enterprise Hub">
+                <div class="app-selector-title">
+                  <span>1. VortexVR Studio &amp; Enterprise Hub</span>
+                  <span style="color:#b8ff01;font-size:11px;">VR / 3D</span>
+                </div>
+                <div class="app-selector-desc">
+                  Środowisko projektowania scen VR, symulator gogli, konfigurator przestrzeni 3D i telemetrii.
+                </div>
+              </div>
+
+              <div class="app-selector-card" data-app-url="/apps/holoarch/index.html" data-app-name="HoloArch AR — Symulator Hologramów 3D, BIM & LiDAR">
+                <div class="app-selector-title">
+                  <span>2. HoloArch AR — BIM, Hologramy &amp; LiDAR</span>
+                  <span style="color:#00d2d3;font-size:11px;">AR / BIM</span>
+                </div>
+                <div class="app-selector-desc">
+                  Stołowy symulator hologramów architektonicznych 3D, chmury punktów LiDAR i kompozytor modeli.
+                </div>
+              </div>
+
+              <div class="app-selector-card" data-app-url="/apps/holoarch_studio/index.html" data-app-name="HoloArch AR Studio — Luxury Spatial Deck 3D">
+                <div class="app-selector-title">
+                  <span>3. HoloArch AR Studio — Spatial Deck 3D</span>
+                  <span style="color:#00d2d3;font-size:11px;">3D DECK</span>
+                </div>
+                <div class="app-selector-desc">
+                  Rozbudowany deck przestrzenny z inspektorem siatki 3D, teksturami diagrid i oknem pełnoekranowym.
+                </div>
+              </div>
+
+              <div class="app-selector-card" data-app-url="/apps/parallax3d/index.html" data-app-name="Parallax3D — Przestrzenne Modele 3D i Mapy Głębi">
+                <div class="app-selector-title">
+                  <span>4. Parallax3D — Modele 3D i Mapy Głębi</span>
+                  <span style="color:#b8ff01;font-size:11px;">DEPTH 3D</span>
+                </div>
+                <div class="app-selector-desc">
+                  Generator paralaksy wielowarstwowej 3D, map głębi oraz interaktywnych rzutów przestrzennych.
+                </div>
+              </div>
+
+              <div class="app-selector-card" data-app-url="/apps/nextgen_clinic/index.html" data-app-name="Next Generation Clinic — Widoki Paralaksy Okiennej 3D">
+                <div class="app-selector-title">
+                  <span>5. Next Generation Clinic — Paralaksa 3D</span>
+                  <span style="color:#00d2d3;font-size:11px;">CLINIC 3D</span>
+                </div>
+                <div class="app-selector-desc">
+                  System przestrzennych okien 3D dla gabinetów medycznych ze śledzeniem perspektywy pacjenta.
+                </div>
+              </div>
+
+              <div class="app-selector-card" data-app-url="/apps/cml_clinic/index.html" data-app-name="CML Centrum Medycyny Laserowej — Wirtualny Spacer 3D">
+                <div class="app-selector-title">
+                  <span>6. CML Centrum Medycyny Laserowej</span>
+                  <span style="color:#b8ff01;font-size:11px;">MED 3D</span>
+                </div>
+                <div class="app-selector-desc">
+                  Kompletny portal kliniki z wirtualnym spacerem, diagnostyką flebologiczną i okulistyczną.
+                </div>
+              </div>
+
+              <div class="app-selector-card" data-app-url="/apps/lidar_head_3d/index.html" data-app-name="LiDAR 3D Head Visualizer & Depth Histogram Console">
+                <div class="app-selector-title">
+                  <span>7. LiDAR 3D Head Visualizer &amp; Depth Console</span>
+                  <span style="color:#00d2d3;font-size:11px;">LiDAR 3D</span>
+                </div>
+                <div class="app-selector-desc">
+                  Wizualizer chmury punktów 3D głowy, histogram głębi LiDAR i eksporter siatki przestrzennej.
+                </div>
+              </div>
+            </div>
+          </aside>
+
+          <!-- Right Column: Live Interactive App Viewport -->
+          <div class="iframe-stage">
+            <div class="iframe-toolbar">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <span style="font-weight:800;font-size:13.5px;color:#ffffff;" id="active-app-title">
+                  VortexVR Studio &amp; Enterprise Hub
+                </span>
+                <span class="iframe-url-pill" id="active-app-url">/apps/vortexvr/index.html</span>
+              </div>
+              <div style="display:flex;gap:8px;">
+                <button class="action-btn" id="btn-reload-iframe">🔄 Odśwież Widok</button>
+                <a class="action-btn lime" id="btn-open-app-newtab" href="/apps/vortexvr/index.html" target="_blank" rel="noopener" style="text-decoration:none;">
+                  ↗️ Otwórz na Pełnym Ekranie
+                </a>
+              </div>
+            </div>
+            <iframe id="app-live-iframe" src="/apps/vortexvr/index.html" title="Podgląd uruchomionej lokalnie aplikacji 3D/VR"></iframe>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           TAB 4: LIQUID GLASS UI KIT, REFERENCJE 3D & OKNA PARALAKSY 2K
+           =================================================================== -->
+      <section class="tab-view" id="tab-liquid-glass-kit" aria-label="Katalog wzorców projektowych Liquid Glass UI i modeli 3D">
+        <div class="lg-panel panel-full">
+          <div class="panel-header">
+            <span class="panel-title">💎 Biblioteka Projektowa: Liquid Glass UI Kit, Modele 3D &amp; Okna Paralaksy Kliniki (Zapisane Lokalnie)</span>
+            <span class="panel-badge">11 Zasobów HD / 2K</span>
+          </div>
+
+          <div class="gallery-grid">
+            <div class="gallery-card">
+              <img src="/assets/referencje_ui_3d/1_antarctica_spatial_hud.jpg" alt="Antarctica Spatial HUD" />
+              <div class="gallery-card-body">
+                <div class="gallery-card-title">1. Spatial HUD &amp; Cutout Navbar (Antarctica)</div>
+                <div class="gallery-card-meta">Asymetryczny pasek nawigacji z wycięciem pod logo 3D, pełnoekranowe tło 3D i karty telemetrii ze szkła matowego.</div>
+              </div>
+            </div>
+
+            <div class="gallery-card">
+              <img src="/assets/referencje_ui_3d/2_liquid_glass_ui_kit.jpg" alt="Liquid Glass UI Kit" />
+              <div class="gallery-card-body">
+                <div class="gallery-card-title">2. Liquid Glass UI Kit (Refractive Controls)</div>
+                <div class="gallery-card-meta">Wypukłe kapsuły przycisków, podwójne obrysy spekularne, przełączniki dotykowe i karty folderów z zakładką.</div>
+              </div>
+            </div>
+
+            <div class="gallery-card">
+              <img src="/assets/referencje_ui_3d/3_coco_encrypted_channel_3d.jpg" alt="Channel-Based Architecture 3D" />
+              <div class="gallery-card-body">
+                <div class="gallery-card-title">3. Channel-Based 3D Architecture (Coco)</div>
+                <div class="gallery-card-meta"> Wielowarstwowy piedestał z podświetleniem krawędziowym cyan i lewitujące szklane kapsuły czatów.</div>
+              </div>
+            </div>
+
+            <div class="gallery-card">
+              <img src="/assets/referencje_ui_3d/4_layered_security_shield_3d.jpg" alt="Wielowarstwowa Tarcza 3D" />
+              <div class="gallery-card-body">
+                <div class="gallery-card-title">4. 4-Warstwowa Tarcza Bezpieczeństwa 3D</div>
+                <div class="gallery-card-meta">Metaliczna baza, przydymione szkło kobaltowe, neonowy pierścień #B8FF01 i soczewka z symbolem Checkmark.</div>
+              </div>
+            </div>
+
+            <div class="gallery-card">
+              <img src="/assets/referencje_ui_3d/5_isometric_cloud_glass_ribbons.jpg" alt="Izometryczna Chmura 3D" />
+              <div class="gallery-card-body">
+                <div class="gallery-card-title">5. Izometryczna Chmura 3D &amp; Wstęgi Szklane</div>
+                <div class="gallery-card-meta">Stacja bazowa z wnęką świetlną, 3-warstwowa chmura z niebieskim rdzeniem i orbitujące zakrzywione wstęgi.</div>
+              </div>
+            </div>
+
+            <div class="gallery-card">
+              <img src="/assets/clinic_windows/clinic_window_1.png" alt="Okno Paralaksy Kliniki 1" />
+              <div class="gallery-card-body">
+                <div class="gallery-card-title">6. Okno Paralaksy Kliniki #1 (2K)</div>
+                <div class="gallery-card-meta">Tekstura 2K z katalogu Paralexa outdoor of clinic — załadowana bezpośrednio na ścianę okienną w scenie 3D.</div>
+              </div>
+            </div>
+
+            <div class="gallery-card">
+              <img src="/assets/clinic_windows/clinic_window_2.png" alt="Okno Paralaksy Kliniki 2" />
+              <div class="gallery-card-body">
+                <div class="gallery-card-title">7. Okno Paralaksy Kliniki #2 (2K)</div>
+                <div class="gallery-card-meta">Widok zewnętrzny 2K do symulacji głębi okiennej w gabinetach okulistycznych i flebologicznych.</div>
+              </div>
+            </div>
+
+            <div class="gallery-card">
+              <img src="/assets/clinic_windows/clinic_window_3.png" alt="Okno Paralaksy Kliniki 3" />
+              <div class="gallery-card-body">
+                <div class="gallery-card-title">8. Okno Paralaksy Kliniki #3 (2K)</div>
+                <div class="gallery-card-meta">Widok krajobrazowy 2K z obsługą przesunięcia paralaksy względem kąta nachylenia kamery pacjenta.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- BOTTOM DOCK BAR -->
+    <footer class="bottom-dock hud-interactive">
+      <div class="dock-status">
+        <span class="pulse-dot"></span>
+        <span>Serwer Lokalny: <strong>127.0.0.1:8765</strong> · Wszystkie 7 aplikacji + Studio 3D/VR działa bez dostępu do sieci</span>
+      </div>
+      <div class="dock-status">
+        <span>Skróty dla pacjentów VI:</span>
+        <span><kbd class="kbd-tag">Spacja</kbd> Komunikat Głosowy</span>
+        <span><kbd class="kbd-tag">W</kbd> Następny Punkt Trasy</span>
+        <span><kbd class="kbd-tag">B</kbd> Impuls Dźwiękowy 528 Hz</span>
+        <span><kbd class="kbd-tag">V</kbd> Tryb VR</span>
+        <span><kbd class="kbd-tag">Alt+K</kbd> Kontrast AAA</span>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- =========================================================================
+       3. LOCAL OFFLINE THREE.JS (r186) + WEB AUDIO HRTF + 6-PARAM ENGINE
+       ========================================================================= -->
+  <script type="module">
+    import * as THREE from "/shared_vendor/three.js";
+    import { OrbitControls } from "/shared_vendor/three_addons_controls_OrbitControls__js.js";
+
+    // -------------------------------------------------------------------------
+    // A. DANE WĘZŁÓW KLINIKI (CYFROWY BLIŹNIAK DLA PACJENTÓW NIEWIDOMYCH - VI)
+    // -------------------------------------------------------------------------
+    const CLINIC_NODES = {
+      recepcja: {
+        id: "recepcja",
+        name: "Recepcja Główna (Wejście)",
+        pos: new THREE.Vector3(0, 0, 7.5),
+        color: 0x00d2d3,
+        desc: "Punkt startowy przy wejściu głównym. Początek żółtej ścieżki naprowadzającej."
+      },
+      korytarz_poludnie: {
+        id: "korytarz_poludnie",
+        name: "Korytarz Południowy (Punkt Dotykowy #1)",
+        pos: new THREE.Vector3(0, 0, 2.0),
+        color: 0xffd600,
+        desc: "Skrzyżowanie z guzkami uwagi: w lewo (godzina 9) Gabinet 104, w prawo (godzina 3) Gabinet 108."
+      },
+      gabinet_104: {
+        id: "gabinet_104",
+        name: "Gabinet 104 — Okulistyka Laserowa",
+        pos: new THREE.Vector3(-6.2, 0, 2.0),
+        color: 0x2b6aff,
+        desc: "Drzwi z tabliczką Braille'a po lewej stronie na wysokości 140 cm."
+      },
+      gabinet_108: {
+        id: "gabinet_108",
+        name: "Gabinet 108 — Flebologia i Skaner LiDAR 3D",
+        pos: new THREE.Vector3(6.2, 0, 2.0),
+        color: 0xb8ff01,
+        desc: "Stanowisko 6-parametrowego skanera 3D LiDAR i diagnostyki naczyniowej."
+      },
+      korytarz_polnoc: {
+        id: "korytarz_polnoc",
+        name: "Korytarz Północny (Punkt Dotykowy #2)",
+        pos: new THREE.Vector3(0, 0, -4.0),
+        color: 0xffd600,
+        desc: "Skrzyżowanie z guzkami uwagi: w lewo Sala Zabiegowa 112, w prawo Strefa Okien 2K, prosto Winda."
+      },
+      sala_112: {
+        id: "sala_112",
+        name: "Sala 112 — Mikrochirurgia i Diagnostyka",
+        pos: new THREE.Vector3(-6.2, 0, -4.0),
+        color: 0xff9f43,
+        desc: "Wejście automatyczne z sygnalizacją akustyczną."
+      },
+      strefa_okien: {
+        id: "strefa_okien",
+        name: "Strefa Relaksu — Okna Paralaksy 3D (2K)",
+        pos: new THREE.Vector3(6.2, 0, -4.0),
+        color: 0x00d2d3,
+        desc: "Przestrzeń z wielkoformatowym oknem paralaksy 2K i komunikatami audio."
+      },
+      winda: {
+        id: "winda",
+        name: "Winda Dostępna (Piętra Kliniki)",
+        pos: new THREE.Vector3(0, 0, -7.2),
+        color: 0xb8ff01,
+        desc: "Winda z syntezatorem mowy i oznaczeniami wypukłymi."
+      }
+    };
+
+    const CLINIC_EDGES = [
+      ["recepcja", "korytarz_poludnie"],
+      ["korytarz_poludnie", "gabinet_104"],
+      ["korytarz_poludnie", "gabinet_108"],
+      ["korytarz_poludnie", "korytarz_polnoc"],
+      ["korytarz_polnoc", "sala_112"],
+      ["korytarz_polnoc", "strefa_okien"],
+      ["korytarz_polnoc", "winda"]
+    ];
+
+    function findAccessibleRoute(startId, targetId) {
+      if (startId === targetId) return [CLINIC_NODES[startId]];
+      const queue = [[startId]];
+      const visited = new Set([startId]);
+      while (queue.length > 0) {
+        const path = queue.shift();
+        const curr = path[path.length - 1];
+        for (const [a, b] of CLINIC_EDGES) {
+          const next = a === curr ? b : (b === curr ? a : null);
+          if (next && !visited.has(next)) {
+            const newPath = [...path, next];
+            if (next === targetId) {
+              return newPath.map(id => CLINIC_NODES[id]);
+            }
+            visited.add(next);
+            queue.push(newPath);
+          }
+        }
+      }
+      return [CLINIC_NODES[startId], CLINIC_NODES[targetId]];
+    }
+
+    // -------------------------------------------------------------------------
+    // B. INICJALIZACJA SCENY THREE.JS (r186) + SHADERY LIQUID GLASS
+    // -------------------------------------------------------------------------
+    const canvas = document.getElementById("webgl-canvas");
+    const renderer = new THREE.WebGLRenderer({
+      canvas,
+      antialias: true,
+      powerPreference: "high-performance"
+    });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.18;
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x06101e);
+    scene.fog = new THREE.FogExp2(0x06101e, 0.022);
+
+    const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 200);
+    camera.position.set(14.5, 12.0, 16.5);
+
+    // Stereo cameras for VR split-screen mode
+    const cameraLeft = new THREE.PerspectiveCamera(55, (window.innerWidth * 0.5) / window.innerHeight, 0.1, 200);
+    const cameraRight = new THREE.PerspectiveCamera(55, (window.innerWidth * 0.5) / window.innerHeight, 0.1, 200);
+    let isVRMode = false;
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.06;
+    controls.target.set(0, 1.2, 0);
+    controls.maxPolarAngle = Math.PI * 0.49;
+
+    // Studio & Architectural Lighting
+    const ambientLight = new THREE.AmbientLight(0xd8ecff, 1.15);
+    scene.add(ambientLight);
+
+    const keyLight = new THREE.DirectionalLight(0xffffff, 2.4);
+    keyLight.position.set(14, 22, 16);
+    keyLight.castShadow = true;
+    keyLight.shadow.mapSize.set(2048, 2048);
+    scene.add(keyLight);
+
+    const cyanRimLight = new THREE.PointLight(0x00d2d3, 4.5, 28);
+    cyanRimLight.position.set(-8, 5, 4);
+    scene.add(cyanRimLight);
+
+    const limeRimLight = new THREE.PointLight(0xb8ff01, 3.8, 26);
+    limeRimLight.position.set(8, 5, -3);
+    scene.add(limeRimLight);
+
+    // Shared Liquid Glass Physical Material
+    const liquidGlassMat = new THREE.MeshPhysicalMaterial({
+      color: 0x5eb0ff,
+      transmission: 0.86,
+      opacity: 1,
+      transparent: true,
+      roughness: 0.12,
+      metalness: 0.04,
+      ior: 1.46,
+      thickness: 0.9,
+      clearcoat: 1.0,
+      clearcoatRoughness: 0.06,
+      reflectivity: 0.95
+    });
+
+    // -------------------------------------------------------------------------
+    // C. BUDOWA CYFROWEGO BLIŹNIAKA KLINIKI 3D (PODŁOGA, ŚCIANY, ŚCIEŻKI VI)
+    // -------------------------------------------------------------------------
+    const clinicGroup = new THREE.Group();
+    scene.add(clinicGroup);
+
+    // Floor Slab
+    const floorGeo = new THREE.BoxGeometry(20, 0.3, 20);
+    const floorMat = new THREE.MeshStandardMaterial({
+      color: 0x0b192c,
+      roughness: 0.35,
+      metalness: 0.2
+    });
+    const floorMesh = new THREE.Mesh(floorGeo, floorMat);
+    floorMesh.position.y = -0.15;
+    floorMesh.receiveShadow = true;
+    clinicGroup.add(floorMesh);
+
+    // Subtle Metric Grid (1.0m spacing)
+    const gridHelper = new THREE.GridHelper(20, 20, 0x00d2d3, 0x19375a);
+    gridHelper.position.y = 0.01;
+    clinicGroup.add(gridHelper);
+
+    // Tactile Paving Strips (Ścieżki Naprowadzające dla Niewidomych)
+    const tactileMat = new THREE.MeshStandardMaterial({
+      color: 0xffd600,
+      emissive: 0xffb300,
+      emissiveIntensity: 0.45,
+      roughness: 0.3
+    });
+
+    function addTactileCorridorStrip(x1, z1, x2, z2) {
+      const dx = x2 - x1;
+      const dz = z2 - z1;
+      const len = Math.hypot(dx, dz);
+      const stripGeo = new THREE.BoxGeometry(0.42, 0.04, len);
+      const strip = new THREE.Mesh(stripGeo, tactileMat);
+      strip.position.set((x1 + x2) / 2, 0.025, (z1 + z2) / 2);
+      strip.rotation.y = Math.atan2(dx, dz);
+      clinicGroup.add(strip);
+    }
+
+    for (const [idA, idB] of CLINIC_EDGES) {
+      const pA = CLINIC_NODES[idA].pos;
+      const pB = CLINIC_NODES[idB].pos;
+      addTactileCorridorStrip(pA.x, pA.z, pB.x, pB.z);
+    }
+
+    // Tactile Blister Domes & Node Beacons at Each Clinic Waypoint
+    const beaconMeshes = {};
+    Object.values(CLINIC_NODES).forEach(node => {
+      const padGeo = new THREE.CylinderGeometry(0.65, 0.72, 0.07, 32);
+      const padMat = new THREE.MeshStandardMaterial({
+        color: node.color,
+        emissive: node.color,
+        emissiveIntensity: 0.55,
+        roughness: 0.25
+      });
+      const pad = new THREE.Mesh(padGeo, padMat);
+      pad.position.set(node.pos.x, 0.04, node.pos.z);
+      clinicGroup.add(pad);
+
+      // Floating Hologram Ring above Node
+      const ringGeo = new THREE.TorusGeometry(0.52, 0.045, 16, 48);
+      const ringMat = new THREE.MeshBasicMaterial({ color: node.color });
+      const ring = new THREE.Mesh(ringGeo, ringMat);
+      ring.rotation.x = Math.PI / 2;
+      ring.position.set(node.pos.x, 0.45, node.pos.z);
+      clinicGroup.add(ring);
+      beaconMeshes[node.id] = ring;
+    });
+
+    // Refractive Liquid Glass Clinic Room Partitions
+    function addGlassRoom(cx, cz, w, d, accentHex) {
+      const wallH = 2.6;
+      const backWall = new THREE.Mesh(new THREE.BoxGeometry(w, wallH, 0.14), liquidGlassMat);
+      backWall.position.set(cx, wallH / 2, cz - d / 2);
+      clinicGroup.add(backWall);
+
+      const frontWall = new THREE.Mesh(new THREE.BoxGeometry(w, wallH, 0.14), liquidGlassMat);
+      frontWall.position.set(cx, wallH / 2, cz + d / 2);
+      clinicGroup.add(frontWall);
+
+      // Glowing Neon Top Frame
+      const rimMat = new THREE.MeshStandardMaterial({
+        color: accentHex,
+        emissive: accentHex,
+        emissiveIntensity: 0.9
+      });
+      const topBar = new THREE.Mesh(new THREE.BoxGeometry(w + 0.1, 0.08, d + 0.1), rimMat);
+      topBar.position.set(cx, wallH + 0.04, cz);
+      clinicGroup.add(topBar);
+    }
+
+    addGlassRoom(-6.2, 2.0, 4.2, 3.6, 0x2b6aff); // Gabinet 104
+    addGlassRoom(6.2, 2.0, 4.2, 3.6, 0xb8ff01);  // Gabinet 108 (LiDAR)
+    addGlassRoom(-6.2, -4.0, 4.2, 3.6, 0xff9f43); // Sala 112
+
+    // -------------------------------------------------------------------------
+    // D. OKNO PARALAKSY 2K KLINIKI (Z KATALOGU PARALEXA OUTDOOR OF CLINIC)
+    // -------------------------------------------------------------------------
+    const textureLoader = new THREE.TextureLoader();
+    const windowPlaneGeo = new THREE.PlaneGeometry(4.8, 2.7);
+    const windowPlaneMat = new THREE.MeshBasicMaterial({
+      color: 0xffffff,
+      side: THREE.DoubleSide
+    });
+    const clinicWindowMesh = new THREE.Mesh(windowPlaneGeo, windowPlaneMat);
+    clinicWindowMesh.position.set(6.2, 1.55, -5.75);
+    clinicGroup.add(clinicWindowMesh);
+
+    // Frame around 2K Window
+    const winFrame = new THREE.Mesh(
+      new THREE.BoxGeometry(5.05, 2.95, 0.12),
+      new THREE.MeshStandardMaterial({ color: 0x00d2d3, emissive: 0x00d2d3, emissiveIntensity: 0.45 })
+    );
+    winFrame.position.set(6.2, 1.55, -5.83);
+    clinicGroup.add(winFrame);
+
+    function loadClinicWindowTexture(index) {
+      const url = `/assets/clinic_windows/clinic_window_${index}.png`;
+      textureLoader.load(url, tex => {
+        tex.colorSpace = THREE.SRGBColorSpace;
+        windowPlaneMat.map = tex;
+        windowPlaneMat.needsUpdate = true;
+      });
+    }
+    loadClinicWindowTexture(1);
+
+    // -------------------------------------------------------------------------
+    // E. 4-WARSTWOWA TARCZA BEZPIECZEŃSTWA 3D & IZOMETRYCZNA CHMURA (Z REFERENCJI)
+    // -------------------------------------------------------------------------
+    const heroSculptureGroup = new THREE.Group();
+    heroSculptureGroup.position.set(-4.8, 2.1, -8.2);
+    scene.add(heroSculptureGroup);
+
+    function createShieldShape(scale = 1) {
+      const s = new THREE.Shape();
+      s.moveTo(0, 1.35 * scale);
+      s.quadraticCurveTo(1.15 * scale, 1.35 * scale, 1.25 * scale, 0.25 * scale);
+      s.quadraticCurveTo(1.15 * scale, -0.95 * scale, 0, -1.45 * scale);
+      s.quadraticCurveTo(-1.15 * scale, -0.95 * scale, -1.25 * scale, 0.25 * scale);
+      s.quadraticCurveTo(-1.15 * scale, 1.35 * scale, 0, 1.35 * scale);
+      return s;
+    }
+
+    // Layer 1: Brushed Metallic Backplate (z = 0)
+    const shieldL1 = new THREE.Mesh(
+      new THREE.ExtrudeGeometry(createShieldShape(1.0), { depth: 0.14, bevelEnabled: true, bevelThickness: 0.04, bevelSize: 0.04 }),
+      new THREE.MeshStandardMaterial({ color: 0xd0d7e2, metalness: 0.65, roughness: 0.22 })
+    );
+    heroSculptureGroup.add(shieldL1);
+
+    // Layer 2: Smoked Cobalt Glass Plate (z = +0.20)
+    const shieldL2 = new THREE.Mesh(
+      new THREE.ExtrudeGeometry(createShieldShape(0.88), { depth: 0.12, bevelEnabled: true, bevelThickness: 0.03, bevelSize: 0.03 }),
+      liquidGlassMat
+    );
+    shieldL2.position.z = 0.20;
+    heroSculptureGroup.add(shieldL2);
+
+    // Layer 3: Neon Lime/Chartreuse Ring (#B8FF01, z = +0.38)
+    const shieldL3 = new THREE.Mesh(
+      new THREE.ExtrudeGeometry(createShieldShape(0.76), { depth: 0.09, bevelEnabled: true, bevelThickness: 0.025, bevelSize: 0.025 }),
+      new THREE.MeshStandardMaterial({ color: 0xb8ff01, emissive: 0x8eff00, emissiveIntensity: 0.75, roughness: 0.18 })
+    );
+    shieldL3.position.z = 0.38;
+    heroSculptureGroup.add(shieldL3);
+
+    // Layer 4: Refractive Front Lens + Floating 3D Checkmark (z = +0.54)
+    const shieldL4 = new THREE.Mesh(
+      new THREE.ExtrudeGeometry(createShieldShape(0.64), { depth: 0.11, bevelEnabled: true, bevelThickness: 0.03, bevelSize: 0.03 }),
+      liquidGlassMat
+    );
+    shieldL4.position.z = 0.54;
+    heroSculptureGroup.add(shieldL4);
+
+    // Isometric Cloud Pedestal & Orbiting Ribbons (Reference Image 5)
+    const cloudNodeGroup = new THREE.Group();
+    cloudNodeGroup.position.set(4.8, 1.3, -8.2);
+    scene.add(cloudNodeGroup);
+
+    const pedestalBase = new THREE.Mesh(
+      new THREE.BoxGeometry(2.6, 0.45, 2.6),
+      new THREE.MeshStandardMaterial({ color: 0xeef4ff, roughness: 0.2, metalness: 0.1 })
+    );
+    cloudNodeGroup.add(pedestalBase);
+
+    const pedestalGlowWell = new THREE.Mesh(
+      new THREE.BoxGeometry(2.0, 0.1, 2.0),
+      new THREE.MeshStandardMaterial({ color: 0x1e6bff, emissive: 0x00d2d3, emissiveIntensity: 0.85 })
+    );
+    pedestalGlowWell.position.y = 0.24;
+    cloudNodeGroup.add(pedestalGlowWell);
+
+    const cloudCoreSphere = new THREE.Mesh(
+      new THREE.SphereGeometry(0.68, 32, 32),
+      liquidGlassMat
+    );
+    cloudCoreSphere.position.set(0, 1.15, 0);
+    cloudNodeGroup.add(cloudCoreSphere);
+
+    const ribbonRing = new THREE.Mesh(
+      new THREE.TorusGeometry(1.35, 0.07, 16, 64, Math.PI * 1.45),
+      liquidGlassMat
+    );
+    ribbonRing.position.y = 1.15;
+    ribbonRing.rotation.x = Math.PI * 0.42;
+    cloudNodeGroup.add(ribbonRing);
+
+    // -------------------------------------------------------------------------
+    // F. AVATAR PACJENTA VI + ŚCIEŻKA NAWIGACYJNA 3D + TOPOGRAFIA LiDAR 3D
+    // -------------------------------------------------------------------------
+    const patientAvatar = new THREE.Group();
+    const avatarBody = new THREE.Mesh(
+      new THREE.CapsuleGeometry(0.28, 1.0, 16, 24),
+      new THREE.MeshStandardMaterial({ color: 0xb8ff01, emissive: 0x00d2d3, emissiveIntensity: 0.45 })
+    );
+    avatarBody.position.y = 0.85;
+    patientAvatar.add(avatarBody);
+    patientAvatar.position.copy(CLINIC_NODES.recepcja.pos);
+    scene.add(patientAvatar);
+
+    // Dynamic 3D LiDAR Surface Mesh (for 6-Parameter Clinical Analyzer)
+    const lidarGeo = new THREE.PlaneGeometry(3.2, 3.2, 36, 36);
+    const lidarMat = new THREE.MeshStandardMaterial({
+      color: 0x00d2d3,
+      emissive: 0x0a2e46,
+      wireframe: false,
+      roughness: 0.28,
+      metalness: 0.15,
+      side: THREE.DoubleSide
+    });
+    const lidarSurfaceMesh = new THREE.Mesh(lidarGeo, lidarMat);
+    lidarSurfaceMesh.rotation.x = -Math.PI / 2;
+    lidarSurfaceMesh.position.set(6.2, 0.95, 2.0); // Inside Gabinet 108
+    scene.add(lidarSurfaceMesh);
+
+    function deformLidarMesh(depthMm, smoothnessPct, rybPct) {
+      const posAttr = lidarGeo.attributes.position;
+      const amp = (depthMm / 15.0) * 0.55;
+      const roughnessNoise = (100 - smoothnessPct) / 100.0 * 0.12;
+      for (let i = 0; i < posAttr.count; i++) {
+        const x = posAttr.getX(i);
+        const y = posAttr.getY(i);
+        const r = Math.hypot(x, y);
+        const gaussian = Math.exp(-(r * r) / 1.15);
+        const ripple = Math.sin(r * 6.0) * roughnessNoise * gaussian;
+        posAttr.setZ(i, amp * gaussian + ripple);
+      }
+      posAttr.needsUpdate = true;
+      lidarGeo.computeVertexNormals();
+
+      // Update color based on RYB tissue index
+      if (rybPct >= 65) {
+        lidarMat.color.setHex(0x00d2d3);
+      } else if (rybPct >= 40) {
+        lidarMat.color.setHex(0xff9f43);
+      } else {
+        lidarMat.color.setHex(0xff5252);
+      }
+    }
+    deformLidarMesh(-0.8, 82, 76);
+
+    // -------------------------------------------------------------------------
+    // G. SILNIK DŹWIĘKU PRZESTRZENNEGO 3D HRTF + KOMUNIKATY GŁOSOWE TTS
+    // -------------------------------------------------------------------------
+    let audioCtx = null;
+
+    function triggerHRTFBeaconPing(targetVec, freq = 528) {
+      try {
+        if (!audioCtx) {
+          const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+          audioCtx = new AudioContextClass();
+        }
+        if (audioCtx.state === "suspended") {
+          audioCtx.resume();
+        }
+
+        const listener = audioCtx.listener;
+        if (listener.positionX) {
+          listener.positionX.value = patientAvatar.position.x;
+          listener.positionY.value = 1.65;
+          listener.positionZ.value = patientAvatar.position.z;
+        }
+
+        const panner = audioCtx.createPanner();
+        panner.panningModel = "HRTF";
+        panner.distanceModel = "inverse";
+        panner.refDistance = 1.0;
+        panner.maxDistance = 30.0;
+        panner.rolloffFactor = 1.4;
+        panner.positionX.value = targetVec.x;
+        panner.positionY.value = 1.4;
+        panner.positionZ.value = targetVec.z;
+
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(freq * 1.25, audioCtx.currentTime + 0.22);
+
+        gain.gain.setValueAtTime(0.01, audioCtx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.32, audioCtx.currentTime + 0.04);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.38);
+
+        osc.connect(panner);
+        panner.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.4);
+      } catch (err) {
+        console.warn("WebAudio HRTF info:", err);
+      }
+    }
+
+    function speakNavigationInstruction(text) {
+      const ariaEl = document.getElementById("vi-aria-live");
+      if (ariaEl) ariaEl.textContent = text;
+      if ("speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.lang = "pl-PL";
+        utter.rate = 1.02;
+        window.speechSynthesis.speak(utter);
+      }
+    }
+
+    // -------------------------------------------------------------------------
+    // H. LOGIKA NAWIGACJI KROK PO KROKU PO KLINICE (TRASA A*)
+    // -------------------------------------------------------------------------
+    let currentRoute = [];
+    let currentStepIdx = 0;
+    let isWalkingRoute = false;
+    let walkProgress = 0;
+
+    function updateRouteUI() {
+      const startId = document.getElementById("vi-start-select").value;
+      const targetId = document.getElementById("vi-target-select").value;
+      currentRoute = findAccessibleRoute(startId, targetId);
+      currentStepIdx = 0;
+
+      // Calculate total distance & steps (1 step = 0.72m)
+      let totalMeters = 0;
+      for (let i = 0; i < currentRoute.length - 1; i++) {
+        totalMeters += currentRoute[i].pos.distanceTo(currentRoute[i + 1].pos);
+      }
+      const totalSteps = Math.max(1, Math.round(totalMeters / 0.72));
+      document.getElementById("vi-distance-badge").textContent =
+        `${totalMeters.toFixed(1)} m · ${totalSteps} kroków`;
+
+      const startNode = currentRoute[0];
+      const endNode = currentRoute[currentRoute.length - 1];
+      patientAvatar.position.copy(startNode.pos);
+
+      const instruction = currentRoute.length > 1
+        ? `Trasa wyznaczona z: ${startNode.name} do: ${endNode.name}. Dystans całkowity: ${totalMeters.toFixed(1)} metra (${totalSteps} kroków). Podążaj wzdłuż żółtej linii naprowadzającej na godzinie 12. ${endNode.desc}`
+        : `Jesteś już w punkcie docelowym: ${endNode.name}. ${endNode.desc}`;
+
+      document.getElementById("vi-instruction-text").textContent = instruction;
+
+      const listEl = document.getElementById("vi-waypoint-list");
+      listEl.innerHTML = "";
+      currentRoute.forEach((node, idx) => {
+        const div = document.createElement("div");
+        div.className = "waypoint-item" + (idx === currentStepIdx ? " current" : "");
+        div.innerHTML = `<span>${idx + 1}. ${node.name}</span><span>${idx === 0 ? "START" : (idx === currentRoute.length - 1 ? "CEL 528Hz" : "WĘZEŁ")}</span>`;
+        listEl.appendChild(div);
+      });
+    }
+
+    updateRouteUI();
+
+    document.getElementById("vi-start-select").addEventListener("change", updateRouteUI);
+    document.getElementById("vi-target-select").addEventListener("change", updateRouteUI);
+
+    document.getElementById("btn-vi-speak").addEventListener("click", () => {
+      const txt = document.getElementById("vi-instruction-text").textContent;
+      speakNavigationInstruction(txt);
+    });
+
+    document.getElementById("btn-vi-beacon-ping").addEventListener("click", () => {
+      const targetId = document.getElementById("vi-target-select").value;
+      const targetNode = CLINIC_NODES[targetId];
+      triggerHRTFBeaconPing(targetNode.pos, 528);
+    });
+
+    document.getElementById("btn-vi-next-step").addEventListener("click", () => {
+      if (currentRoute.length === 0) return;
+      currentStepIdx = (currentStepIdx + 1) % currentRoute.length;
+      const node = currentRoute[currentStepIdx];
+      patientAvatar.position.copy(node.pos);
+      triggerHRTFBeaconPing(node.pos, 660);
+      speakNavigationInstruction(`Punkt ${currentStepIdx + 1}: ${node.name}. ${node.desc}`);
+      const items = document.querySelectorAll("#vi-waypoint-list .waypoint-item");
+      items.forEach((el, i) => el.classList.toggle("current", i === currentStepIdx));
+    });
+
+    document.getElementById("btn-vi-start-walk").addEventListener("click", () => {
+      if (currentRoute.length < 2) {
+        updateRouteUI();
+      }
+      isWalkingRoute = true;
+      walkProgress = 0;
+      const endNode = currentRoute[currentRoute.length - 1];
+      triggerHRTFBeaconPing(endNode.pos, 528);
+      speakNavigationInstruction(document.getElementById("vi-instruction-text").textContent);
+    });
+
+    // Camera Mode Presets
+    let currentCamMode = "iso";
+    document.querySelectorAll("[data-cam]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        currentCamMode = btn.getAttribute("data-cam");
+        document.getElementById("cam-mode-label").textContent = btn.textContent.trim();
+        if (currentCamMode === "iso") {
+          camera.position.set(14.5, 12.0, 16.5);
+          controls.target.set(0, 1.2, 0);
+        } else if (currentCamMode === "shield") {
+          camera.position.set(0, 2.5, -3.2);
+          controls.target.set(0, 1.7, -8.2);
+        } else if (currentCamMode === "window") {
+          camera.position.set(6.2, 1.65, -1.8);
+          controls.target.set(6.2, 1.55, -5.75);
+        }
+      });
+    });
+
+    // -------------------------------------------------------------------------
+    // I. KREATOR OBIEKTÓW 3D & MATERIAŁÓW LIQUID GLASS
+    // -------------------------------------------------------------------------
+    const customObjectsGroup = new THREE.Group();
+    scene.add(customObjectsGroup);
+    let customObjectCount = 24;
+
+    function updateObjCounter() {
+      document.getElementById("scene-obj-count").textContent = `Obiekty: ${customObjectCount}`;
+    }
+
+    document.getElementById("btn-add-glass-wall").addEventListener("click", () => {
+      const mesh = new THREE.Mesh(new THREE.BoxGeometry(2.8, 2.4, 0.16), liquidGlassMat);
+      mesh.position.set((Math.random() - 0.5) * 8, 1.2, (Math.random() - 0.5) * 8);
+      customObjectsGroup.add(mesh);
+      customObjectCount++;
+      updateObjCounter();
+      triggerHRTFBeaconPing(mesh.position, 528);
+    });
+
+    document.getElementById("btn-add-audio-beacon").addEventListener("click", () => {
+      const mesh = new THREE.Mesh(
+        new THREE.OctahedronGeometry(0.42, 1),
+        new THREE.MeshStandardMaterial({ color: 0xb8ff01, emissive: 0x00d2d3, emissiveIntensity: 0.9 })
+      );
+      mesh.position.set((Math.random() - 0.5) * 9, 1.5, (Math.random() - 0.5) * 9);
+      customObjectsGroup.add(mesh);
+      customObjectCount++;
+      updateObjCounter();
+      triggerHRTFBeaconPing(mesh.position, 880);
+    });
+
+    document.getElementById("btn-add-tactile-node").addEventListener("click", () => {
+      const mesh = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.65, 0.08, 24), tactileMat);
+      mesh.position.set((Math.random() - 0.5) * 6, 0.05, (Math.random() - 0.5) * 8);
+      customObjectsGroup.add(mesh);
+      customObjectCount++;
+      updateObjCounter();
+    });
+
+    document.getElementById("btn-add-holo-pillar").addEventListener("click", () => {
+      const mesh = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.35, 0.35, 2.8, 32, 1, true),
+        new THREE.MeshBasicMaterial({ color: 0x00d2d3, wireframe: true })
+      );
+      mesh.position.set((Math.random() - 0.5) * 8, 1.4, (Math.random() - 0.5) * 8);
+      customObjectsGroup.add(mesh);
+      customObjectCount++;
+      updateObjCounter();
+    });
+
+    document.getElementById("slider-mat-transmission").addEventListener("input", e => {
+      const v = parseFloat(e.target.value);
+      liquidGlassMat.transmission = v;
+      document.getElementById("val-mat-transmission").textContent = v.toFixed(2);
+    });
+
+    document.getElementById("slider-mat-ior").addEventListener("input", e => {
+      const v = parseFloat(e.target.value);
+      liquidGlassMat.ior = v;
+      document.getElementById("val-mat-ior").textContent = v.toFixed(2);
+    });
+
+    document.getElementById("slider-mat-roughness").addEventListener("input", e => {
+      const v = parseFloat(e.target.value);
+      liquidGlassMat.roughness = v;
+      document.getElementById("val-mat-roughness").textContent = v.toFixed(2);
+    });
+
+    document.getElementById("select-clinic-window").addEventListener("change", e => {
+      const idx = e.target.value;
+      document.getElementById("val-window-idx").textContent = `Widok #${idx}`;
+      loadClinicWindowTexture(idx);
+    });
+
+    document.getElementById("btn-reset-scene").addEventListener("click", () => {
+      while (customObjectsGroup.children.length > 0) {
+        customObjectsGroup.remove(customObjectsGroup.children[0]);
+      }
+      customObjectCount = 24;
+      updateObjCounter();
+      currentCamMode = "iso";
+      camera.position.set(14.5, 12.0, 16.5);
+      controls.target.set(0, 1.2, 0);
+    });
+
+    document.getElementById("btn-export-scene-json").addEventListener("click", () => {
+      const payload = {
+        exportedAt: new Date().toISOString(),
+        suite: "Sentinel 3D & VR Spatial Studio",
+        clinicNodes: Object.keys(CLINIC_NODES),
+        materialConfig: {
+          transmission: liquidGlassMat.transmission,
+          ior: liquidGlassMat.ior,
+          roughness: liquidGlassMat.roughness
+        },
+        customObjectsAdded: customObjectsGroup.children.length
+      };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `SCENA_3D_VR_KLINIKA_${Date.now()}.json`;
+      a.click();
+    });
+
+    // -------------------------------------------------------------------------
+    // J. 6-PARAMETROWY ANALIZATOR KLINICZNY 3D / LiDAR (WHI 3D, CEI & RADAR SVG)
+    // -------------------------------------------------------------------------
+    function compute6ParamMetrics() {
+      const p1 = parseFloat(document.getElementById("p1-ryb").value);
+      const p2 = parseFloat(document.getElementById("p2-depth").value);
+      const p3 = parseFloat(document.getElementById("p3-perfusion").value);
+      const p4 = parseFloat(document.getElementById("p4-smoothness").value);
+      const p5 = parseFloat(document.getElementById("p5-contraction").value);
+      const p6 = parseFloat(document.getElementById("p6-moisture").value);
+
+      document.getElementById("val-p1").textContent = `${p1}%`;
+      document.getElementById("val-p2").textContent = `${p2.toFixed(1)} mm`;
+      document.getElementById("val-p3").textContent = `${p3} / 100`;
+      document.getElementById("val-p4").textContent = `${p4}%`;
+      document.getElementById("val-p5").textContent = `${p5}%`;
+      document.getElementById("val-p6").textContent = `${p6}%`;
+
+      // Normalize depth (-15..10 mm -> optimal around 0 mm)
+      const depthScore = Math.max(0, 100 - Math.abs(p2) * 7.5);
+      // Optimal moisture around 55%
+      const moistureScore = Math.max(0, 100 - Math.abs(p6 - 55) * 1.8);
+
+      const whi = (
+        p1 * 0.25 +
+        depthScore * 0.20 +
+        p3 * 0.15 +
+        p4 * 0.15 +
+        p5 * 0.15 +
+        moistureScore * 0.10
+      );
+      const cei = Math.max(0, Math.min(100, 100 - whi * 0.92 + (Math.abs(p2) * 1.4)));
+
+      document.getElementById("score-whi").textContent = `${whi.toFixed(1)}%`;
+      document.getElementById("score-cei").textContent = `${cei.toFixed(1)}%`;
+      document.getElementById("hud-whi-mini").textContent = `${whi.toFixed(1)}%`;
+
+      const badgeEl = document.getElementById("clinical-urgency-badge");
+      const interpEl = document.getElementById("clinical-interpretation");
+
+      if (whi >= 70) {
+        badgeEl.textContent = "NORMA / OPTYMALNIE";
+        badgeEl.style.background = "rgba(184, 255, 1, 0.28)";
+        interpEl.textContent =
+          `Klasyfikacja: NORMA / KONTROLA PLANOWA (WHI 3D: ${whi.toFixed(1)}%). Siatka topograficzna LiDAR wykazuje prawidłową ziarninę (${p1}%) i stabilną krzywiznę brzegową (${p5}%).`;
+      } else if (whi >= 45) {
+        badgeEl.textContent = "OBSERWACJA WZMOŻONA";
+        badgeEl.style.background = "rgba(255, 159, 67, 0.35)";
+        interpEl.textContent =
+          `Klasyfikacja: OBSERWACJA WZMOŻONA (WHI 3D: ${whi.toFixed(1)}%, CEI: ${cei.toFixed(1)}%). Zalecana kontrola fotogrametryczna 3D za 7 dni.`;
+      } else {
+        badgeEl.textContent = "PILNA INTERWENCJA";
+        badgeEl.style.background = "rgba(255, 82, 82, 0.45)";
+        interpEl.textContent =
+          `Klasyfikacja: PILNA INTERWENCJA KLINICZNA (WHI 3D: ${whi.toFixed(1)}%, CEI: ${cei.toFixed(1)}%). Podwyższony wskaźnik zaostrzenia naczyniowego — wskazana konsultacja specjalistyczna.`;
+      }
+
+      deformLidarMesh(p2, p4, p1);
+      renderRadarChart([p1, depthScore, p3, p4, p5, moistureScore]);
+    }
+
+    function renderRadarChart(scores) {
+      const svg = document.getElementById("radar-svg");
+      const cx = 120, cy = 110, rMax = 80;
+      const labels = ["RYB", "LiDAR", "Perfuzja", "Gładkość", "Brzeg 3D", "Wilgotność"];
+      let html = "";
+
+      // Concentric hexagons
+      [0.33, 0.66, 1.0].forEach(level => {
+        const pts = scores.map((_, i) => {
+          const angle = (Math.PI * 2 * i) / 6 - Math.PI / 2;
+          return `${cx + Math.cos(angle) * rMax * level},${cy + Math.sin(angle) * rMax * level}`;
+        }).join(" ");
+        html += `<polygon points="${pts}" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1" />`;
+      });
+
+      // Data polygon
+      const dataPts = scores.map((val, i) => {
+        const norm = Math.max(0.08, Math.min(1.0, val / 100));
+        const angle = (Math.PI * 2 * i) / 6 - Math.PI / 2;
+        return `${cx + Math.cos(angle) * rMax * norm},${cy + Math.sin(angle) * rMax * norm}`;
+      }).join(" ");
+
+      html += `<polygon points="${dataPts}" fill="rgba(0, 210, 211, 0.32)" stroke="#b8ff01" stroke-width="2.2" />`;
+
+      // Axis labels
+      labels.forEach((lbl, i) => {
+        const angle = (Math.PI * 2 * i) / 6 - Math.PI / 2;
+        const lx = cx + Math.cos(angle) * (rMax + 22);
+        const ly = cy + Math.sin(angle) * (rMax + 18);
+        html += `<text x="${lx}" y="${ly}" fill="#f4f8ff" font-size="10" font-weight="700" text-anchor="middle" dominant-baseline="middle">${lbl}</text>`;
+      });
+
+      svg.innerHTML = html;
+    }
+
+    document.querySelectorAll(".param-slider").forEach(s => {
+      s.addEventListener("input", compute6ParamMetrics);
+    });
+
+    document.querySelectorAll("[data-preset]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const p = btn.getAttribute("data-preset");
+        if (p === "optimal") {
+          document.getElementById("p1-ryb").value = 84;
+          document.getElementById("p2-depth").value = -0.4;
+          document.getElementById("p3-perfusion").value = 78;
+          document.getElementById("p4-smoothness").value = 88;
+          document.getElementById("p5-contraction").value = 85;
+          document.getElementById("p6-moisture").value = 55;
+        } else if (p === "moderate") {
+          document.getElementById("p1-ryb").value = 52;
+          document.getElementById("p2-depth").value = -4.2;
+          document.getElementById("p3-perfusion").value = 48;
+          document.getElementById("p4-smoothness").value = 54;
+          document.getElementById("p5-contraction").value = 50;
+          document.getElementById("p6-moisture").value = 72;
+        } else {
+          document.getElementById("p1-ryb").value = 24;
+          document.getElementById("p2-depth").value = -9.6;
+          document.getElementById("p3-perfusion").value = 28;
+          document.getElementById("p4-smoothness").value = 30;
+          document.getElementById("p5-contraction").value = 25;
+          document.getElementById("p6-moisture").value = 88;
+        }
+        compute6ParamMetrics();
+      });
+    });
+
+    compute6ParamMetrics();
+
+    // Clinical Export JSON & CSV (UTF-8 BOM)
+    document.getElementById("btn-export-clinical-json").addEventListener("click", () => {
+      const record = {
+        recordId: "PAC-2026-0419",
+        timestamp: new Date().toISOString(),
+        parameters: {
+          colorSpectrumIndexRYB: parseFloat(document.getElementById("p1-ryb").value),
+          lidarDepthVolumeMm: parseFloat(document.getElementById("p2-depth").value),
+          huePerfusionIndex: parseFloat(document.getElementById("p3-perfusion").value),
+          surfaceSmoothness: parseFloat(document.getElementById("p4-smoothness").value),
+          edgeCurvatureContraction: parseFloat(document.getElementById("p5-contraction").value),
+          specularMoistureIndex: parseFloat(document.getElementById("p6-moisture").value)
+        },
+        whi3D: document.getElementById("score-whi").textContent,
+        cei: document.getElementById("score-cei").textContent,
+        classification: document.getElementById("clinical-urgency-badge").textContent
+      };
+      const blob = new Blob([JSON.stringify(record, null, 2)], { type: "application/json" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "REKORD_KLINICZNY_3D_LIDAR_PAC-2026-0419.json";
+      a.click();
+    });
+
+    document.getElementById("btn-export-clinical-csv").addEventListener("click", () => {
+      const header = "ID_Pacjenta;Data;RYB_Procent;Glebia_LiDAR_mm;Perfuzja_Hue;Gladkosc_3D;Kontrakcja_3D;Wilgotnosc_Specular;WHI_3D;CEI;Klasyfikacja\n";
+      const row = [
+        "PAC-2026-0419",
+        new Date().toISOString(),
+        document.getElementById("p1-ryb").value,
+        document.getElementById("p2-depth").value,
+        document.getElementById("p3-perfusion").value,
+        document.getElementById("p4-smoothness").value,
+        document.getElementById("p5-contraction").value,
+        document.getElementById("p6-moisture").value,
+        document.getElementById("score-whi").textContent,
+        document.getElementById("score-cei").textContent,
+        document.getElementById("clinical-urgency-badge").textContent
+      ].join(";") + "\n";
+      const blob = new Blob(["\uFEFF" + header + row], { type: "text/csv;charset=utf-8;" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "REKORD_KLINICZNY_3D_LIDAR_PAC-2026-0419.csv";
+      a.click();
+    });
+
+    // -------------------------------------------------------------------------
+    // K. PRZEŁĄCZNIK ZAKŁADEK I HUB 7 LOKALNYCH APLIKACJI 3D / VR
+    // -------------------------------------------------------------------------
+    document.querySelectorAll("[data-tab]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const targetId = btn.getAttribute("data-tab");
+        document.querySelectorAll("[data-tab]").forEach(b => {
+          b.classList.toggle("active", b === btn);
+          b.setAttribute("aria-selected", b === btn ? "true" : "false");
+        });
+        document.querySelectorAll(".tab-view").forEach(v => {
+          v.classList.toggle("active", v.id === targetId);
+        });
+        if (targetId === "tab-lidar-6param") {
+          camera.position.set(6.2, 3.6, 5.2);
+          controls.target.set(6.2, 0.9, 2.0);
+        }
+      });
+    });
+
+    document.querySelectorAll(".app-selector-card").forEach(card => {
+      card.addEventListener("click", () => {
+        document.querySelectorAll(".app-selector-card").forEach(c => c.classList.remove("active"));
+        card.classList.add("active");
+        const appUrl = card.getAttribute("data-app-url");
+        const appName = card.getAttribute("data-app-name");
+        document.getElementById("active-app-title").textContent = appName;
+        document.getElementById("active-app-url").textContent = appUrl;
+        document.getElementById("app-live-iframe").src = appUrl;
+        document.getElementById("btn-open-app-newtab").href = appUrl;
+      });
+    });
+
+    document.getElementById("btn-reload-iframe").addEventListener("click", () => {
+      const iframe = document.getElementById("app-live-iframe");
+      iframe.contentWindow.location.reload();
+    });
+
+    // VR Split-Screen & High-Contrast Toggles
+    function toggleVRMode() {
+      isVRMode = !isVRMode;
+      document.getElementById("vr-split-overlay").classList.toggle("active", isVRMode);
+      document.getElementById("btn-toggle-vr").classList.toggle("active", isVRMode);
+    }
+
+    function toggleHighContrast() {
+      document.body.classList.toggle("vi-high-contrast");
+      document.getElementById("btn-toggle-contrast").classList.toggle(
+        "active",
+        document.body.classList.contains("vi-high-contrast")
+      );
+    }
+
+    document.getElementById("btn-toggle-vr").addEventListener("click", toggleVRMode);
+    document.getElementById("btn-toggle-contrast").addEventListener("click", toggleHighContrast);
+
+    // Keyboard Shortcuts for Visually Impaired Users
+    window.addEventListener("keydown", e => {
+      if (e.target.tagName === "INPUT" || e.target.tagName === "SELECT") return;
+      if (e.code === "Space") {
+        e.preventDefault();
+        document.getElementById("btn-vi-speak").click();
+      } else if (e.key === "w" || e.key === "W") {
+        document.getElementById("btn-vi-next-step").click();
+      } else if (e.key === "b" || e.key === "B") {
+        document.getElementById("btn-vi-beacon-ping").click();
+      } else if (e.key === "v" || e.key === "V") {
+        toggleVRMode();
+      } else if (e.altKey && (e.key === "k" || e.key === "K")) {
+        toggleHighContrast();
+      }
+    });
+
+    // -------------------------------------------------------------------------
+    // L. PĘTLA RENDEROWANIA WEBGL2 (60 FPS + STEREOSKOPIA VR + ANIMACJA TRASY)
+    // -------------------------------------------------------------------------
+    let lastTime = performance.now();
+    let frameCount = 0;
+
+    function animate(now) {
+      requestAnimationFrame(animate);
+      frameCount++;
+      if (now - lastTime >= 1000) {
+        document.getElementById("hud-fps").textContent = `${frameCount} FPS`;
+        frameCount = 0;
+        lastTime = now;
+      }
+
+      const t = now * 0.001;
+
+      // Animate 4-Layer Shield & Isometric Cloud Ribbon
+      heroSculptureGroup.position.y = 2.1 + Math.sin(t * 1.6) * 0.14;
+      heroSculptureGroup.rotation.y = Math.sin(t * 0.7) * 0.28;
+      ribbonRing.rotation.z = t * 0.85;
+      cloudCoreSphere.position.y = 1.15 + Math.cos(t * 2.0) * 0.08;
+
+      // Pulse clinic waypoint beacons
+      Object.values(beaconMeshes).forEach((mesh, i) => {
+        const s = 1 + Math.sin(t * 3.0 + i) * 0.12;
+        mesh.scale.set(s, s, 1);
+      });
+
+      // Smooth A* Route Walking Animation
+      if (isWalkingRoute && currentRoute.length >= 2) {
+        walkProgress += 0.0045;
+        if (walkProgress >= 1) {
+          walkProgress = 1;
+          isWalkingRoute = false;
+          const endNode = currentRoute[currentRoute.length - 1];
+          triggerHRTFBeaconPing(endNode.pos, 528);
+        }
+        const totalSegments = currentRoute.length - 1;
+        const scaled = walkProgress * totalSegments;
+        const segIdx = Math.min(totalSegments - 1, Math.floor(scaled));
+        const localT = scaled - segIdx;
+        patientAvatar.position.lerpVectors(
+          currentRoute[segIdx].pos,
+          currentRoute[segIdx + 1].pos,
+          localT
+        );
+      }
+
+      // First-Person POV Camera Lock (1.65 m eye height)
+      if (currentCamMode === "pov") {
+        const targetNode = currentRoute[currentRoute.length - 1] || CLINIC_NODES.gabinet_108;
+        camera.position.set(
+          patientAvatar.position.x,
+          1.65 + Math.sin(t * 4.0) * 0.02,
+          patientAvatar.position.z + 0.4
+        );
+        controls.target.set(targetNode.pos.x, 1.4, targetNode.pos.z);
+      }
+
+      controls.update();
+
+      // Render Either Single Viewport or VR Stereoscopic Split-Screen (IPD 64 mm)
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+
+      if (!isVRMode) {
+        renderer.setScissorTest(false);
+        renderer.setViewport(0, 0, w, h);
+        renderer.render(scene, camera);
+      } else {
+        renderer.setScissorTest(true);
+        const halfW = Math.floor(w / 2);
+
+        // Compute IPD eye offset (+/- 0.032m)
+        const rightVec = new THREE.Vector3(1, 0, 0).applyQuaternion(camera.quaternion);
+
+        cameraLeft.position.copy(camera.position).addScaledVector(rightVec, -0.032);
+        cameraLeft.quaternion.copy(camera.quaternion);
+        cameraLeft.aspect = halfW / h;
+        cameraLeft.updateProjectionMatrix();
+
+        cameraRight.position.copy(camera.position).addScaledVector(rightVec, 0.032);
+        cameraRight.quaternion.copy(camera.quaternion);
+        cameraRight.aspect = halfW / h;
+        cameraRight.updateProjectionMatrix();
+
+        // Left Eye
+        renderer.setViewport(0, 0, halfW, h);
+        renderer.setScissor(0, 0, halfW, h);
+        renderer.render(scene, cameraLeft);
+
+        // Right Eye
+        renderer.setViewport(halfW, 0, w - halfW, h);
+        renderer.setScissor(halfW, 0, w - halfW, h);
+        renderer.render(scene, cameraRight);
+      }
+    }
+
+    requestAnimationFrame(animate);
+
+    window.addEventListener("resize", () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  </script>
+</body>
+</html>
+

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>PayloadContent</key>
+	<array>
+		<dict>
+			<key>DNSSettings</key>
+			<dict>
+				<key>DNSProtocol</key>
+				<string>HTTPS</string>
+				<key>ServerAddresses</key>
+				<array>
+					<string>1.1.1.2</string>
+					<string>1.0.0.2</string>
+					<string>2606:4700:4700::1112</string>
+					<string>2606:4700:4700::1002</string>
+				</array>
+				<key>ServerURL</key>
+				<string>https://security.cloudflare-dns.com/dns-query</string>
+			</dict>
+			<key>PayloadDescription</key>
+			<string>Szyfrowany DNS-over-HTTPS (DoH) z blokadą domen malware, ransomware, phishingu i serwerów C2 (Sentinel Shield iOS Protection).</string>
+			<key>PayloadDisplayName</key>
+			<string>Sentinel Shield Encrypted Anti-Malware DNS (DoH)</string>
+			<key>PayloadIdentifier</key>
+			<string>com.sentinelshield.ios.dns.security</string>
+			<key>PayloadType</key>
+			<string>com.apple.dnsSettings.managed</string>
+			<key>PayloadUUID</key>
+			<string>9A323E7D-6133-4EEB-AFB4-9FBC5D450261</string>
+			<key>PayloadVersion</key>
+			<integer>1</integer>
+		</dict>
+	</array>
+	<key>PayloadDescription</key>
+	<string>Profil ochrony sieciowej i anty-malware Sentinel Shield dla iPhone 15 Pro Max (Szyfrowany DNS-over-HTTPS 1.1.1.2 / 1.0.0.2).</string>
+	<key>PayloadDisplayName</key>
+	<string>Sentinel Shield — Ochrona Sieciowa i Anty-Malware iOS</string>
+	<key>PayloadIdentifier</key>
+	<string>com.sentinelshield.ios.profile.master</string>
+	<key>PayloadOrganization</key>
+	<string>Sentinel Shield Security Suite</string>
+	<key>PayloadRemovalDisallowed</key>
+	<false/>
+	<key>PayloadType</key>
+	<string>Configuration</string>
+	<key>PayloadUUID</key>
+	<string>D84AP162-0000-8130-0002-39E13642001C</string>
+	<key>PayloadVersion</key>
+	<integer>1</integer>
+</dict>
+</plist>
+
